@@ -57,6 +57,22 @@ def plot(c, column_mean, title):
     pl.close()
 
 
+def plot_time_evolution(df, unnecessaryPlots):
+    if not os.path.exists("time_evolution"):
+        os.mkdir("time_evolution")
+
+    for title in df:
+        if title not in unnecessaryPlots:
+            col = df[title]
+            y = [abs(complex(value.replace(" ", "").replace("i", "j"))) for value in col]
+            pl.plot(y)
+            pl.xlabel("Packet")
+            pl.ylabel("Magnitude")
+            pl.savefig(os.getcwd() + '\\time_evolution\\figure' + title + '.png')
+            pl.close()
+            print("plotting graph " + title)
+
+
 if __name__ == '__main__':
     import pandas as pd
     import matplotlib.pyplot as pl
@@ -69,5 +85,13 @@ if __name__ == '__main__':
     # colnames = ['SC0', 'SC10', 'SC20', 'SC30', 'SC40', 'SC50', 'SC60', 'SC70', 'SC80', 'SC90', 'SC100', 'SC200',
     # 'SC255']
 
-    for title in colnames:
-        plot_histogram_for_sc(title, df)
+    # for title in colnames:
+    # plot_histogram_for_sc(title, df)
+
+    response = input("Plot evolution in time for each sub-carrier? [Y/n]")
+    if response.lower() == "y" or response == '':
+        with open(os.getcwd() + "\\unnecessaryPlots") as f:
+            unnecessaryPlots = f.read().splitlines()
+        plot_time_evolution(df, unnecessaryPlots)
+    if response.lower() == "n":
+        quit()
