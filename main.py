@@ -5,7 +5,7 @@ def is_stationary(batch_mean, column_mean):
     return abs(batch_mean - column_mean) < 0.1 * column_mean
 
 
-def elaborate_batch(column_mean, batch, size):
+def process_batch(column_mean, batch, size):
     sum = 0
     for value in batch:
         value = complex(value.replace(" ", "").replace("i", "j"))
@@ -24,23 +24,32 @@ def create_batches(data, length):
     return [data[i:i + length] for i in range(0, len(data), length)]
 
 
-def plot_histogram_for_sc(title, df, size=365):  # customizable: ho usato 365 perché divisore di 1825
-    col = df[title]
+def plot_histogram_for_sc(title, df, unnecessary_plots, size=365):  # customizable: size is set as 365 because it
+    # divides the column length in 5 batches of the same size
 
-    c = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in col)
+    if title not in unnecessary_plots:
+        col = df[title]
 
-    print(title)
-    column_mean = float(c.mean())
-    print("Column mean:", column_mean)
+        c = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in col)
 
-    plottable = True
-    for batch in create_batches(df, size):
-        if elaborate_batch(column_mean, batch[title], size):
-            continue
-        plottable = False
+        print(title)
+        column_mean = float(c.mean())
+        print("Column mean:", column_mean)
 
-    # if plottable:
-    plot(c, column_mean, title)
+        # plottable = True
+        # for batch in create_batches(df, size):
+        #   if process_batch(column_mean, batch[title], size):
+        #      continue
+        #   plottable = False
+
+        # if plottable:
+        #   plot(c, column_mean, title)
+
+        # remove previous comments and instead comment the following three lines if the plot is only needed for
+        # stationary processes
+        for batch in create_batches(df, size):
+            process_batch(column_mean, batch[title], size)
+        plot(c, column_mean, title)
 
 
 def plot(c, column_mean, title):
@@ -57,12 +66,12 @@ def plot(c, column_mean, title):
     pl.close()
 
 
-def plot_time_evolution(df, unnecessaryPlots):
+def plot_time_evolution(df, unnecessary_plots):
     if not os.path.exists("time_evolution"):
         os.mkdir("time_evolution")
 
     for title in df:
-        if title not in unnecessaryPlots:
+        if title not in unnecessary_plots:
             col = df[title]
             y = [abs(complex(value.replace(" ", "").replace("i", "j"))) for value in col]
             pl.plot(y)
@@ -85,13 +94,14 @@ if __name__ == '__main__':
     # colnames = ['SC0', 'SC10', 'SC20', 'SC30', 'SC40', 'SC50', 'SC60', 'SC70', 'SC80', 'SC90', 'SC100', 'SC200',
     # 'SC255']
 
-    # for title in colnames:
-    # plot_histogram_for_sc(title, df)
+    with open(os.getcwd() + "\\unnecessaryPlots") as f:
+        unnecessary_plots = f.read().splitlines()
+
+    for title in colnames:
+        plot_histogram_for_sc(title, df, unnecessary_plots)
 
     response = input("Plot evolution in time for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        with open(os.getcwd() + "\\unnecessaryPlots") as f:
-            unnecessaryPlots = f.read().splitlines()
-        plot_time_evolution(df, unnecessaryPlots)
+        plot_time_evolution(df, unnecessary_plots)
     if response.lower() == "n":
         quit()
