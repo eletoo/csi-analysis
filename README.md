@@ -4,8 +4,9 @@ calling functions contained in other Python files
 whose content is described in section
 [Python files content](README.md#python-files-content), 
 plots the content of the [histogram](histograms) folder, 
-the [time_evolution](time_evolution) folder, and the
-[increments_hist](increments_hist) folder. 
+the [time_evolution](time_evolution) folder, the
+[increments_hist](increments_hist) folder, and 
+the [auto-correlation_graphs](auto-correlation_graphs) folder. 
 
 The [csi.csv](csi.csv) file contains the data to be plotted: as 
 indicated by the filename extension, it contains 
@@ -46,6 +47,9 @@ and run correctly.
 ## Python files content
 Below are listed the Python files whose methods are called
 in [main.py](main.py): 
+* [auto-correlation_plotter.py](auto-correlation_plotter.py):
+contains functions that are used to plot graphs representing
+the auto-correlation process for each sub-carrier
 * [histograms_plotter.py](histograms_plotter.py): contains functions that are used
 to plot a magnitude/relative frequency histogram 
 for each sub-carrier, including functions used to verify 
