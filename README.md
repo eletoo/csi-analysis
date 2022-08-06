@@ -3,10 +3,12 @@ The `main.py` file contains the code that, by
 calling functions contained in other Python files 
 whose content is described in section
 [Python files content](README.md#python-files-content), 
-plots the content of the [histogram](histograms) folder, 
-the [time_evolution](time_evolution) folder, the
-[increments_hist](increments_hist) folder, and 
-the [auto-correlation_graphs](auto-correlation_graphs) folder. 
+plots the content of the following folders:
+* [histogram](histograms) 
+* [time_evolution](time_evolution)
+* [increments_hist](increments_hist)
+* [auto-correlation_graphs](auto-correlation_graphs)
+* [fit_by_sc](fit_by_sc)
 
 The [csi.csv](csi.csv) file contains the data to be plotted: as 
 indicated by the filename extension, it contains 
@@ -61,3 +63,7 @@ for each sub-carrier
 * [time_evolution_plotter.py](time_evolution_plotter.py): contains a function that is used
 to plot a graph representing the evolution of the signal
 magnitude over time for each sub-carrier
+* [fitting_by_sc.py](fitting_by_sc.py): contains a function that 
+is used to find the best-fitting distribution for each 
+sub-carrier and save each output in a dedicated `.csv` 
+file 
