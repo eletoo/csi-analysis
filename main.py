@@ -1,5 +1,6 @@
 import os
 
+import parameters_calculator
 from autocorrelation_plotter import plot_autocorrelation
 from histograms_plotter import plot_histogram_for_sc
 from increments_plotter import plot_increments_for_sc
@@ -47,3 +48,5 @@ if __name__ == '__main__':
         fit_by_sc(df, unnecessary_plots)
     if response.lower() == "n":
         pass
+
+    parameters_calculator.calculate_params(df, unnecessary_plots)
