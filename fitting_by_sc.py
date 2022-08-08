@@ -37,18 +37,16 @@ def fit_by_sc(df, unnecessary_plots):
                      'wrapcauchy'
                      ]
 
-    fit(df, fitter.get_common_distributions(), unnecessary_plots, 'fit_by_sc')
-    fit(df, distributions, unnecessary_plots, 'fit_by_sc_2')
+    fit(df, fitter.get_common_distributions(), 'fit_by_sc')
+    fit(df, distributions, 'fit_by_sc_2')
 
 
-def fit(df, distributions, unnecessary_plots, path):
+def fit(df, distributions, path):
     for title in df:
-        if title not in unnecessary_plots:
-            sc_data = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in df[title])
 
-            f = Fitter(sc_data - sc_data.mean(), xmin=-150, xmax=150, bins=100,
-                       distributions=distributions,  # considers only the 10 most common distributions
-                       timeout=30, density=True)
-            f.fit()
-            print("fitting " + title)
-            f.summary().to_csv(path + '\\Fitting' + title + '.csv', sep='\t', index=True)
+        f = Fitter(df[title] - df[title].mean(), xmin=-150, xmax=150, bins=100,
+                   distributions=distributions,  # considers only the 10 most common distributions
+                   timeout=30, density=True)
+        f.fit()
+        print("fitting " + title)
+        f.summary().to_csv(path + '\\Fitting' + title + '.csv', sep='\t', index=True)

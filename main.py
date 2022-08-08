@@ -1,5 +1,6 @@
 import os
 
+import merged_plotter
 import parameters_calculator
 from autocorrelation_plotter import plot_autocorrelation
 from histograms_plotter import plot_histogram_for_sc
@@ -18,28 +19,34 @@ if __name__ == '__main__':
     with open(os.getcwd() + "\\unnecessaryPlots") as f:
         unnecessary_plots = f.read().splitlines()
 
+    for title in df:
+        if title in unnecessary_plots:
+            del df[title]
+        else:
+            df[title] = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in df[title])
+
     response = input("Plot magnitude/relative frequency histogram for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
         for title in colnames:
-            plot_histogram_for_sc(title, df, unnecessary_plots)
+            plot_histogram_for_sc(title, df)
     if response.lower() == "n":
         pass
 
     response = input("Plot evolution in time for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        plot_time_evolution_for_sc(df, unnecessary_plots)
+        plot_time_evolution_for_sc(df)
     if response.lower() == "n":
         pass
 
     response = input("Plot increment/frequency histogram for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        plot_increments_for_sc(df, unnecessary_plots)
+        plot_increments_for_sc(df)
     if response.lower() == "n":
         pass
 
     response = input("Plot auto-correlation function for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        plot_autocorrelation(df, unnecessary_plots)
+        plot_autocorrelation(df)
     if response.lower() == "n":
         pass
 
@@ -49,4 +56,10 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
-    parameters_calculator.calculate_params(df, unnecessary_plots)
+    response = input("Plot merged data? [Y/n]")
+    if response.lower() == "y" or response == '':
+        merged_plotter.plot_merged_data(df)
+    if response.lower() == "n":
+        pass
+
+    parameters_calculator.calculate_params(df)

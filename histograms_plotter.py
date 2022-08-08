@@ -1,6 +1,5 @@
 import os
 
-import pandas as pd
 from matplotlib import pyplot as pl
 
 
@@ -11,7 +10,6 @@ def is_stationary(batch_mean, column_mean):
 def process_batch(column_mean, batch, size):
     sum = 0
     for value in batch:
-        value = complex(value.replace(" ", "").replace("i", "j"))
         sum += abs(value)
 
     batch_mean = sum / size
@@ -27,35 +25,32 @@ def create_batches(data, length):
     return [data[i:i + length] for i in range(0, len(data), length)]
 
 
-def plot_histogram_for_sc(title, df, unnecessary_plots, size=365):  # customizable: size is set as 365 because it
+def plot_histogram_for_sc(title, df, size=365):  # customizable: size is set as 365 because it
     # divides the column length in 5 batches of the same size
 
-    if title not in unnecessary_plots:
-        col = df[title]
+    col = df[title]
 
-        c = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in col)
+    print(title)
+    column_mean = float(col.mean())
+    print("Column mean:", column_mean)
 
-        print(title)
-        column_mean = float(c.mean())
-        print("Column mean:", column_mean)
+    # plottable = True
+    # for batch in create_batches(df, size):
+    #   if process_batch(column_mean, batch[title], size):
+    #      continue
+    #   plottable = False
 
-        # plottable = True
-        # for batch in create_batches(df, size):
-        #   if process_batch(column_mean, batch[title], size):
-        #      continue
-        #   plottable = False
+    # if plottable:
+    #   plot(c, column_mean, title)
 
-        # if plottable:
-        #   plot(c, column_mean, title)
-
-        # remove previous comments and instead comment the following three lines if the plot is only needed for
-        # stationary processes
-        for batch in create_batches(df, size):
-            process_batch(column_mean, batch[title], size)
-        plot(c, column_mean, title)
+    # remove previous comments and instead comment the following three lines if the plot is only needed for
+    # stationary processes
+    for batch in create_batches(df, size):
+        process_batch(column_mean, batch[title], size)
+    plot(col, column_mean, title, '\\histograms')
 
 
-def plot(c, column_mean, title):
+def plot(c, column_mean, title, dir_name):
     c = c - column_mean
     c.hist(bins=100, density=True)
     pl.xlabel('Magnitude')
@@ -65,5 +60,5 @@ def plot(c, column_mean, title):
     # pl.show()
     if not os.path.exists("histograms"):
         os.mkdir("histograms")
-    pl.savefig(os.getcwd() + '\\histograms\\figure' + title + '.png')
+    pl.savefig(os.getcwd() + dir_name + '\\figure' + title + '.png')
     pl.close()
