@@ -45,7 +45,7 @@ def fit(df, distributions, path):
     for title in df:
 
         f = Fitter(df[title] - df[title].mean(), xmin=-150, xmax=150, bins=100,
-                   distributions=distributions,  # considers only the 10 most common distributions
+                   distributions=distributions,
                    timeout=30, density=True)
         f.fit()
         print("fitting " + title)

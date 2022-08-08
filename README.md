@@ -11,6 +11,7 @@ plots the content of the following folders:
 * [fit_by_sc_2](fit_by_sc_2)
 * [fit_by_sc](fit_by_sc)
 * [params](params)
+* [merged_plot](merged_plot)
 
 The [csi.csv](csi.csv) file contains the data to be plotted: as 
 indicated by the filename extension, it contains 
@@ -69,3 +70,10 @@ magnitude over time for each sub-carrier
 are used to find the best-fitting distribution for each 
 sub-carrier and save each output in a dedicated `.csv` 
 file 
+* [parameters_calculator.py](parameters_calculator.py): contains 
+the functions that are used to calculate variance, skewness
+kurtosis for each sub-carrier
+* [merged_plotter.py](merged_plotter.py): contains the functions
+that are used to elaborate the merged data (i.e. by 
+considering all the data as if it belonged to a single
+sub-carrier)

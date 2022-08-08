@@ -56,10 +56,10 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
-    response = input("Plot merged data? [Y/n]")
+    response = input("Elaborate merged data? [Y/n]")
     if response.lower() == "y" or response == '':
         merged_plotter.plot_merged_data(df)
     if response.lower() == "n":
         pass
 
-    parameters_calculator.calculate_params(df)
+   # parameters_calculator.calculate_params(df)
