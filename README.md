@@ -8,6 +8,7 @@ plots the content of the following folders:
 * [fit_by_sc](fit_by_sc)
 * [fit_by_sc_2](fit_by_sc_2)
 * [fit_increments](fit_increments)
+* [fit_increments/Values](fit_increments/Values)
 * [histograms](histograms) 
 * [increments_hist](increments_hist)
 * [merged_plot](merged_plot)
@@ -59,8 +60,7 @@ the auto-correlation process for each sub-carrier
 * [fitting_by_sc.py](fitting_by_sc.py): contains functions that 
 are used to find the best-fitting distribution for each 
 sub-carrier and for the distributions of the increments
-of each sub-carrier and save each output in a dedicated `.csv` 
-file 
+of each sub-carrier and save each output in a dedicated file 
 * [histograms_plotter.py](histograms_plotter.py): contains functions that are used
 to plot a magnitude/relative frequency histogram 
 for each sub-carrier, including functions used to verify 
