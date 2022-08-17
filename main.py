@@ -6,7 +6,7 @@ from autocorrelation_plotter import plot_autocorrelation
 from histograms_plotter import plot_histogram_for_sc
 from increments_plotter import plot_increments_for_sc
 from time_evolution_plotter import plot_time_evolution_for_sc
-from fitting_by_sc import fit_by_sc
+from fitting_by_sc import fit_data_by_sc
 
 if __name__ == '__main__':
     import pandas as pd
@@ -50,9 +50,9 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
-    response = input("Fit distributions? [Y/n]")
+    response = input("Fit distributions on data and increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        fit_by_sc(df, unnecessary_plots)
+        fit_data_by_sc(df)
     if response.lower() == "n":
         pass
 
@@ -62,4 +62,4 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
-   # parameters_calculator.calculate_params(df)
+    parameters_calculator.calculate_params(df)

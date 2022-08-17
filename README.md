@@ -4,14 +4,15 @@ calling functions contained in other Python files
 whose content is described in section
 [Python files content](README.md#python-files-content), 
 plots the content of the following folders:
-* [histograms](histograms) 
-* [time_evolution](time_evolution)
-* [increments_hist](increments_hist)
 * [auto-correlation_graphs](auto-correlation_graphs)
-* [fit_by_sc_2](fit_by_sc_2)
 * [fit_by_sc](fit_by_sc)
-* [params](params)
+* [fit_by_sc_2](fit_by_sc_2)
+* [fit_increments](fit_increments)
+* [histograms](histograms) 
+* [increments_hist](increments_hist)
 * [merged_plot](merged_plot)
+* [params](params)
+* [time_evolution](time_evolution)
 
 The [csi.csv](csi.csv) file contains the data to be plotted: as 
 indicated by the filename extension, it contains 
@@ -52,9 +53,14 @@ and run correctly.
 ## Python files content
 Below are listed the Python files whose methods are called
 in [main.py](main.py): 
-* [auto-correlation_plotter.py](auto-correlation_plotter.py):
+* [auto-correlation_plotter.py](autocorrelation_plotter.py):
 contains functions that are used to plot graphs representing
 the auto-correlation process for each sub-carrier
+* [fitting_by_sc.py](fitting_by_sc.py): contains functions that 
+are used to find the best-fitting distribution for each 
+sub-carrier and for the distributions of the increments
+of each sub-carrier and save each output in a dedicated `.csv` 
+file 
 * [histograms_plotter.py](histograms_plotter.py): contains functions that are used
 to plot a magnitude/relative frequency histogram 
 for each sub-carrier, including functions used to verify 
@@ -62,18 +68,15 @@ whether a process is stationary, divide the column
 corresponding to a process in batches, and process each batch
 * [increments_plotter.py](increments_plotter.py): contains functions that are used
 to plot an increment/frequency histogram 
-for each sub-carrier
-* [time_evolution_plotter.py](time_evolution_plotter.py): contains a function that is used
-to plot a graph representing the evolution of the signal
-magnitude over time for each sub-carrier
-* [fitting_by_sc.py](fitting_by_sc.py): contains functions that 
-are used to find the best-fitting distribution for each 
-sub-carrier and save each output in a dedicated `.csv` 
-file 
-* [parameters_calculator.py](parameters_calculator.py): contains 
-the functions that are used to calculate variance, skewness
-kurtosis for each sub-carrier
+for each sub-carrier 
 * [merged_plotter.py](merged_plotter.py): contains the functions
 that are used to elaborate the merged data (i.e. by 
 considering all the data as if it belonged to a single
 sub-carrier)
+* [parameters_calculator.py](parameters_calculator.py): contains 
+the functions that are used to calculate variance, skewness
+kurtosis for each sub-carrier and for the distribution of 
+the increments of each sub-carrier
+* [time_evolution_plotter.py](time_evolution_plotter.py): contains a function that is used
+to plot a graph representing the evolution of the signal
+magnitude over time for each sub-carrier
