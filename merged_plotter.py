@@ -2,11 +2,12 @@ import os
 import pandas as pd
 import matplotlib.pyplot as pl
 from fitter import Fitter, get_common_distributions
+from fitting_by_sc import fit_distributions_and_save_params
 
 import histograms_plotter
 
 
-def plot_merged_data(df):
+def plot_merged_data(df, distributions):
     if not os.path.exists("merged_plot"):
         os.mkdir("merged_plot")
 
@@ -15,45 +16,22 @@ def plot_merged_data(df):
         new_df = new_df.assign(title=df[title])
 
     histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", '\\merged_plot')
-    fit_merged_data(new_df, os.getcwd() + '\\merged_plot')
+    fit_merged_data(new_df, os.getcwd() + '\\merged_plot', distributions)
     plot_increments_histogram(new_df)
 
 
-def fit_merged_data(df, path):
-    distributions = ['beta',
-                     'cauchy',
-                     'chi',
-                     'chi2',
-                     'dgamma',
-                     'f',
-                     'foldcauchy',
-                     'foldnorm',
-                     'gamma',
-                     'gennorm',
-                     'halfcauchy',
-                     'halfnorm',
-                     'invgamma',
-                     'invgauss',
-                     'loggamma',
-                     'lognorm',
-                     'norm',
-                     'powerlaw',
-                     'powerlognorm',
-                     'powernorm',
-                     'rayleigh',
-                     'wrapcauchy'
-                     ]
-    # distributions = get_common_distributions()
-
-    f = Fitter(df - df.mean(), xmin=-150, xmax=150, bins=100,
-               distributions=distributions,
+def fit_merged_data(df, path, distributions):
+    df1 = df.diff().drop(labels=0, axis=0)
+    f = Fitter(df1 - df1.mean(), xmin=-150, xmax=150, bins=100,
+               distributions=distributions.keys(),
                timeout=30, density=True)
-    f.fit()
-    f.summary().to_csv(path + '\\Fitting Merged Data.csv', sep='\t', index=True)
+    file = open(path + '\\Fitting Increments of merged Data.txt', "w")
+    fit_distributions_and_save_params(distributions, f, file)
+    f.summary().to_csv(path + '\\Fitting Increments of Merged Data.csv', sep='\t', index=True)
 
 
 def plot_increments_histogram(df):
-    df.hist(bins=100)
+    df.diff().hist(bins=100)
     pl.xlabel('Increment')
     pl.ylabel('Frequency')
     pl.title('Merged data Increments')

@@ -7,6 +7,7 @@ from histograms_plotter import plot_histogram_for_sc
 from increments_plotter import plot_increments_for_sc
 from time_evolution_plotter import plot_time_evolution_for_sc
 from fitting_by_sc import fit_data_by_sc
+import scipy.stats as s
 
 if __name__ == '__main__':
     import pandas as pd
@@ -50,16 +51,45 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
+    distributions = {
+        "beta": s.beta,
+        "cauchy": s.cauchy,
+        "chi": s.chi,
+        "chi2": s.chi2,
+        "dgamma": s.dgamma,
+        "f": s.f,
+        "foldcauchy": s.foldcauchy,
+        "foldnorm": s.foldnorm,
+        "gamma": s.gamma,
+        "gennorm": s.gennorm,
+        "halfcauchy": s.halfcauchy,
+        "halfnorm": s.halfnorm,
+        "invgauss": s.invgauss,
+        "invgamma": s.invgamma,
+        "loggamma": s.loggamma,
+        "lognorm": s.lognorm,
+        "norm": s.norm,
+        "powerlaw": s.powerlaw,
+        "powerlognorm": s.powerlognorm,
+        "powernorm": s.powernorm,
+        "rayleigh": s.rayleigh,
+        "wrapcauchy": s.wrapcauchy
+    }
+
     response = input("Fit distributions on data and increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        fit_data_by_sc(df)
+        fit_data_by_sc(df, distributions)
     if response.lower() == "n":
         pass
 
     response = input("Elaborate merged data? [Y/n]")
     if response.lower() == "y" or response == '':
-        merged_plotter.plot_merged_data(df)
+        merged_plotter.plot_merged_data(df, distributions)
     if response.lower() == "n":
         pass
 
-    parameters_calculator.calculate_params(df)
+    response = input("Calculate variance, skewness and kurtosis for each sub-carrier and for the increments? [Y/n]")
+    if response.lower() == "y" or response == '':
+        parameters_calculator.calculate_params(df)
+    if response.lower() == "n":
+        pass
