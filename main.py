@@ -29,7 +29,8 @@ if __name__ == '__main__':
     response = input("Plot magnitude/relative frequency histogram for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
         for title in colnames:
-            plot_histogram_for_sc(title, df)
+            if title not in unnecessary_plots:
+                plot_histogram_for_sc(title, df)
     if response.lower() == "n":
         pass
 
@@ -88,7 +89,7 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
-    response = input("Calculate variance, skewness and kurtosis for each sub-carrier and for the increments? [Y/n]")
+    response = input("Calculate variance, skewness and kurtosis for each sub-carrier and for their increments? [Y/n]")
     if response.lower() == "y" or response == '':
         parameters_calculator.calculate_params(df)
     if response.lower() == "n":

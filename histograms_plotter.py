@@ -1,5 +1,6 @@
 import os
 
+import pandas
 from matplotlib import pyplot as pl
 
 
@@ -50,7 +51,7 @@ def plot_histogram_for_sc(title, df, size=365):  # customizable: size is set as 
     plot(col, column_mean, title, '\\histograms')
 
 
-def plot(c, column_mean, title, dir_name):
+def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str):
     c = c - column_mean
     c.hist(bins=100, density=True)
     pl.xlabel('Magnitude')

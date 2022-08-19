@@ -31,14 +31,14 @@ def fit(df, distributions, path):
 
 def fit_increments(df, distributions, path):
     for title in df:
-        print("fitting " + title)
+        print("fitting increments " + title)
         f = Fitter(df[title] - df[title].mean(), xmin=-150, xmax=150, bins=100,
                    distributions=distributions.keys(),
                    timeout=30, density=True)
 
-        file = open(path + '\\Values\\Fitting' + title + 'Increments.txt', "w")
+        file = open(path + '\\Values\\Parameters of distributions after fitting ' + title + 'Increments.txt', "w")
         fit_distributions_and_save_params(distributions, f, file)
-        f.summary().to_csv(path + '\\Fitting' + title + 'Increments.csv', sep='\t', index=True)
+        f.summary().to_csv(path + '\\Best five distributions fitting' + title + 'Increments.csv', sep='\t', index=True)
 
 
 def fit_distributions_and_save_params(distributions, f, file):
