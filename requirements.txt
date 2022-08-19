@@ -1,0 +1,5 @@
+scipy~=1.9.0
+pandas~=1.4.3
+fitter~=1.4.0
+matplotlib~=3.5.2
+statsmodels~=0.13.2
