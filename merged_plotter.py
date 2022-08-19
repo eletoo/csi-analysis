@@ -18,11 +18,11 @@ def plot_merged_data(df: pandas.DataFrame, distributions):
         new_df = new_df.assign(title=df[title])
 
     histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", '\\merged_plot')
-    fit_merged_data(new_df, os.getcwd() + '\\merged_plot', distributions)
+    fit_merged_data_increments(new_df, os.getcwd() + '\\merged_plot', distributions)
     plot_merged_increments_histogram(new_df)
 
 
-def fit_merged_data(df: pandas.DataFrame, path: str, distributions):
+def fit_merged_data_increments(df: pandas.DataFrame, path: str, distributions):
     df1 = df.diff().drop(labels=0, axis=0)
     f = Fitter(df1 - df1.mean(), xmin=-150, xmax=150, bins=100,
                distributions=distributions.keys(),
