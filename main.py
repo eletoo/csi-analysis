@@ -2,6 +2,7 @@ import os
 
 import merged_plotter
 import parameters_calculator
+import std_deviation_and_kurtosis_plotter
 from autocorrelation_plotter import plot_autocorrelation
 from histograms_plotter import plot_histogram_for_sc
 from increments_plotter import plot_increments_for_sc
@@ -92,5 +93,11 @@ if __name__ == '__main__':
     response = input("Calculate variance, skewness and kurtosis for each sub-carrier and for their increments? [Y/n]")
     if response.lower() == "y" or response == '':
         parameters_calculator.calculate_params(df)
+    if response.lower() == "n":
+        pass
+
+    response = input("Plot standard deviation and kurtosis for the increments? [Y/n]")
+    if response.lower() == "y" or response == '':
+        std_deviation_and_kurtosis_plotter.plot(df)
     if response.lower() == "n":
         pass

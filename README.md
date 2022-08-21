@@ -70,13 +70,16 @@ corresponding to a process in batches, and process each batch
 to plot an increment/frequency histogram 
 for each sub-carrier 
 * [merged_plotter.py](merged_plotter.py): contains the functions
-that are used to elaborate the merged data (i.e. by 
-considering all the data as if it belonged to a single
+that are used to elaborate the merged increments (i.e. by 
+considering all the increments as if they belonged to a single
 sub-carrier)
 * [parameters_calculator.py](parameters_calculator.py): contains 
 the functions that are used to calculate variance, skewness
 kurtosis for each sub-carrier and for the distribution of 
 the increments of each sub-carrier
+* [std_deviation_and_kurtosis_plotter.py](std_deviation_and_kurtosis_plotter.py):
+contains a function used to plot standard deviation and kurtosis
+calculated on the increments of each sub-carrier
 * [time_evolution_plotter.py](time_evolution_plotter.py): contains a function that is used
 to plot a graph representing the evolution of the signal
 magnitude over time for each sub-carrier
