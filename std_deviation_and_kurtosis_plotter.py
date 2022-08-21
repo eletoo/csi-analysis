@@ -4,7 +4,7 @@ import math
 import matplotlib.pyplot as plt
 
 
-def plot(df: pandas.DataFrame):
+def plot_std_dev_and_kurtosis(df: pandas.DataFrame):
     if not os.path.exists("params"):
         os.mkdir("params")
 

@@ -98,6 +98,6 @@ if __name__ == '__main__':
 
     response = input("Plot standard deviation and kurtosis for the increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        std_deviation_and_kurtosis_plotter.plot(df)
+        std_deviation_and_kurtosis_plotter.plot_std_dev_and_kurtosis(df)
     if response.lower() == "n":
         pass
