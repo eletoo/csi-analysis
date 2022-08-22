@@ -11,8 +11,8 @@ def fit_data_by_sc(df, distributions):
     if not os.path.exists("fit_by_sc"):
         os.mkdir("fit_by_sc")
 
-    if not os.path.exists("fit_increments\\Values"):
-        os.mkdir("fit_increments\\Values")
+    if not os.path.exists(os.path.join(os.getcwd(), "fit_increments", "Values")):
+        os.mkdir(os.path.join(os.getcwd(), "fit_increments", "Values"))
 
     # fit(df, fitter.get_common_distributions(), 'fit_by_sc')
     # fit(df, distributions, 'fit_by_sc_2')

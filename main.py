@@ -1,5 +1,6 @@
 import os
 
+import best_fits_param_calculator
 import merged_plotter
 import parameters_calculator
 import std_deviation_and_kurtosis_plotter
@@ -13,12 +14,12 @@ import scipy.stats as s
 if __name__ == '__main__':
     import pandas as pd
 
-    path = os.getcwd() + '\\csi.csv'
+    path = os.path.join(os.getcwd(), 'csi.csv')
 
     colnames = ["SC" + str(i) for i in range(0, 256)]
     df = pd.read_csv(path, names=colnames, header=None)
 
-    with open(os.getcwd() + "\\unnecessaryPlots") as f:
+    with open(os.path.join(os.getcwd(), "unnecessaryPlots")) as f:
         unnecessary_plots = f.read().splitlines()
 
     for title in df:
@@ -84,7 +85,7 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
-    response = input("Elaborate merged data? [Y/n]")
+    response = input("Plot and fit merged data and their increments? [Y/n]")
     if response.lower() == "y" or response == '':
         merged_plotter.plot_merged_data(df, distributions)
     if response.lower() == "n":
@@ -99,5 +100,33 @@ if __name__ == '__main__':
     response = input("Plot standard deviation and kurtosis for the increments? [Y/n]")
     if response.lower() == "y" or response == '':
         std_deviation_and_kurtosis_plotter.plot_std_dev_and_kurtosis(df)
+    if response.lower() == "n":
+        pass
+
+    # if there is not the desired csv file to read, then plot merged data to create it
+    if os.stat(
+            os.path.join(os.getcwd(), "merged_plot",
+                         "Best five distributions fitting Increments of Merged Data.csv")).st_size == 0:
+        merged_plotter.plot_merged_data(df, distributions)
+
+    # read the csv file (read the five distributions that best fit the merged increments)
+    f = pd.read_csv(
+        os.path.join(os.getcwd(), "merged_plot", "Best five distributions fitting Increments of Merged Data.csv"),
+        sep='\t', header=None)
+    # take the first column (names of the distributions) - except for the title
+    best_dists = f.iloc[:, 0].drop(0)
+
+    best_distributions = {}
+    # create a dictionary containing the association (distribution name, scipy distribution) for the five selected
+    # distributions
+
+    print("\nThe five distributions that best fit the merged increments are: ")
+    for dist in best_dists:
+        print("-> " + str(dist))
+        best_distributions[dist] = distributions[dist]
+
+    response = input("Calculate and plot their parameters for each sub-carrier? [Y/n]")
+    if response.lower() == "y" or response == '':
+        best_fits_param_calculator.calculate_best_params(df, best_distributions)
     if response.lower() == "n":
         pass

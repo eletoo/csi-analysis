@@ -17,6 +17,6 @@ def plot(df, title):
     pl.ylabel('Auto-correlation coefficient')
     pl.title("Auto-correlation " + title)
     pl.grid(visible=True)
-    pl.savefig(os.getcwd() + '\\auto-correlation_graphs\\figure' + title + '.png')
+    pl.savefig(os.path.join(os.getcwd(), 'auto-correlation_graphs', 'figure' + title + '.png'))
     print("Plotting figure " + title)
     pl.close()
