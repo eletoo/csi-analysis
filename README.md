@@ -5,10 +5,10 @@ whose content is described in section
 [Python files content](README.md#python-files-content), 
 plots the content of the following folders:
 * [auto-correlation_graphs](auto-correlation_graphs)
+* [best_fits_params](best_fits_params) and sub-folders
 * [fit_by_sc](fit_by_sc)
 * [fit_by_sc_2](fit_by_sc_2)
-* [fit_increments](fit_increments)
-* [fit_increments/Values](fit_increments/Values)
+* [fit_increments](fit_increments) and sub-folders
 * [histograms](histograms) 
 * [increments_hist](increments_hist)
 * [merged_plot](merged_plot)
@@ -57,6 +57,10 @@ in [main.py](main.py):
 * [auto-correlation_plotter.py](autocorrelation_plotter.py):
 contains functions that are used to plot graphs representing
 the auto-correlation process for each sub-carrier
+* [best_fits_param_calculator.py](best_fits_param_calculator.py):
+contains functions that are used to fit the five distributions
+that best fit the merged increments onto each sub-carrier
+and to calculate and plot their parameters
 * [fitting_by_sc.py](fitting_by_sc.py): contains functions that 
 are used to find the best-fitting distribution for each 
 sub-carrier and for the distributions of the increments
