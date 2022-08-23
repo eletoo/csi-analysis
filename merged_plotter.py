@@ -20,7 +20,6 @@ def plot_merged_data(df: pandas.DataFrame, distributions):
     histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", '\\merged_plot')
     fit_merged_data_increments(new_df, os.getcwd() + '\\merged_plot', distributions)
     plot_merged_increments_histogram(new_df)
-    # TODO: add plotting of parameters of the five best-fitting distributions of merged increments
 
 
 def fit_merged_data_increments(df: pandas.DataFrame, path: str, distributions):
