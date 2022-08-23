@@ -17,8 +17,8 @@ def plot_merged_data(df: pandas.DataFrame, distributions):
     for title in df:
         new_df = new_df.assign(title=df[title])
 
-    histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", '\\merged_plot')
-    fit_merged_data_increments(new_df, os.getcwd() + '\\merged_plot', distributions)
+    histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", 'merged_plot')
+    fit_merged_data_increments(new_df, os.path.join(os.getcwd(), 'merged_plot'), distributions)
     plot_merged_increments_histogram(new_df)
 
 
@@ -27,9 +27,10 @@ def fit_merged_data_increments(df: pandas.DataFrame, path: str, distributions):
     f = Fitter(df1 - df1.mean(), xmin=-150, xmax=150, bins=100,
                distributions=distributions.keys(),
                timeout=30, density=True)
-    file = open(path + '\\Parameters of distributions after fitting Increments of merged Data.txt', "w")
+    file = open(os.path.join(path, 'Parameters of distributions after fitting Increments of merged Data.txt'), "w")
     fit_distributions_and_save_params(distributions, f, file)
-    f.summary().to_csv(path + '\\Best five distributions fitting Increments of Merged Data.csv', sep='\t', index=True)
+    f.summary().to_csv(os.path.join(path, 'Best five distributions fitting Increments of Merged Data.csv'), sep='\t',
+                       index=True)
 
 
 def plot_merged_increments_histogram(df: pandas.DataFrame):
@@ -37,5 +38,5 @@ def plot_merged_increments_histogram(df: pandas.DataFrame):
     pl.xlabel('Increment')
     pl.ylabel('Frequency')
     pl.title('Merged data Increments')
-    pl.savefig(os.getcwd() + '\\merged_plot\\figure Merged data Increments.png')
+    pl.savefig(os.path.join(os.getcwd(), 'merged_plot', 'figure Merged data Increments.png'))
     pl.close()

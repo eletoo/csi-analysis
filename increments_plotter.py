@@ -16,6 +16,6 @@ def plot(df):
         pl.xlabel('Increment')
         pl.ylabel('Frequency')
         pl.title(title)
-        pl.savefig(os.getcwd() + '\\increments_hist\\figure' + title + '.png')
+        pl.savefig(os.path.join(os.getcwd(), 'increments_hist', 'figure' + title + '.png'))
         print("Plotting histogram " + title)
         pl.close()

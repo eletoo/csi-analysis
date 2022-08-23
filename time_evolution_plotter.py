@@ -11,6 +11,6 @@ def plot_time_evolution_for_sc(df):
         pl.plot(df[title])
         pl.xlabel("Packet")
         pl.ylabel("Magnitude")
-        pl.savefig(os.getcwd() + '\\time_evolution\\figure' + title + '.png')
+        pl.savefig(os.path.join(os.getcwd(), 'time_evolution', 'figure' + title + '.png'))
         pl.close()
         print("plotting graph " + title)

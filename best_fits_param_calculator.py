@@ -50,7 +50,6 @@ def plot_parameters(distributions, fitted_results):
             pl.xlabel('Sub-carriers')
             pl.ylabel(param)
             pl.title(distribution)
-            # pl.show()
             if not os.path.exists(os.path.join(os.getcwd(), "best_fits_params", distribution)):
                 os.mkdir(os.path.join(os.getcwd(), "best_fits_params", distribution))
             pl.savefig(os.path.join(os.getcwd(), "best_fits_params", distribution, f"{param}.png"))

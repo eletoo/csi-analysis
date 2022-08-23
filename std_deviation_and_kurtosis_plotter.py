@@ -30,4 +30,4 @@ def plot_std_dev_and_kurtosis(df: pandas.DataFrame):
     ax1.set_ylabel('Standard deviation of the increments', color='g')
     ax2.set_ylabel('Kurtosis of the increments', color='b')
     # plt.show()
-    plt.savefig(os.getcwd() + '\\params\\std_deviation_and_kurtosis.png')
+    plt.savefig(os.path.join(os.getcwd(), 'params', 'std_deviation_and_kurtosis.png'))

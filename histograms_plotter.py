@@ -48,7 +48,7 @@ def plot_histogram_for_sc(title, df, size=365):  # customizable: size is set as 
     # stationary processes
     for batch in create_batches(df, size):
         process_batch(column_mean, batch[title], size)
-    plot(col, column_mean, title, '\\histograms')
+    plot(col, column_mean, title, 'histograms')
 
 
 def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str):
@@ -61,5 +61,5 @@ def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str):
     # pl.show()
     if not os.path.exists("histograms"):
         os.mkdir("histograms")
-    pl.savefig(os.getcwd() + dir_name + '\\figure' + title + '.png')
+    pl.savefig(os.path.join(os.getcwd(), dir_name, 'figure' + title + '.png'))
     pl.close()

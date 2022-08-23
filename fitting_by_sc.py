@@ -26,7 +26,7 @@ def fit(df, distributions, path):
                    timeout=30, density=True)
         f.fit()
         print("fitting " + title)
-        f.summary().to_csv(path + '\\Fitting' + title + '.csv', sep='\t', index=True)
+        f.summary().to_csv(os.path.join(path, 'Fitting' + title + '.csv'), sep='\t', index=True)
 
 
 def fit_increments(df, distributions, path):
@@ -36,9 +36,11 @@ def fit_increments(df, distributions, path):
                    distributions=distributions.keys(),
                    timeout=30, density=True)
 
-        file = open(path + '\\Values\\Parameters of distributions after fitting ' + title + 'Increments.txt', "w")
+        file = open(
+            os.path.join(path, 'Values', 'Parameters of distributions after fitting ' + title + 'Increments.txt'), "w")
         fit_distributions_and_save_params(distributions, f, file)
-        f.summary().to_csv(path + '\\Best five distributions fitting' + title + 'Increments.csv', sep='\t', index=True)
+        f.summary().to_csv(os.path.join(path, 'Best five distributions fitting' + title + 'Increments.csv'), sep='\t',
+                           index=True)
 
 
 def fit_distributions_and_save_params(distributions, f, file):

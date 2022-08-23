@@ -10,9 +10,9 @@ def calculate_params(df):
     # calculate_variance(df, "params\\variance.txt")
     # calculate_skewness(df, "params\\skewness.txt")
     # calculate_kurtosis(df, "params\\kurtosis.txt")
-    calculate_variance(df1, "params\\increments_variance.txt")
-    calculate_skewness(df1, "params\\increments_skewness.txt")
-    calculate_kurtosis(df1, "params\\increments_kurtosis.txt")
+    calculate_variance(df1, os.path.join("params", "increments_variance.txt"))
+    calculate_skewness(df1, os.path.join("params", "increments_skewness.txt"))
+    calculate_kurtosis(df1, os.path.join("params", "increments_kurtosis.txt"))
 
 
 def calculate_variance(df, path):
