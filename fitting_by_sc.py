@@ -52,3 +52,15 @@ def fit_distributions_and_save_params(distributions, f, file):
             file.write("{}:\t{:.8f}\t".format(pname, pval))
         file.write(")\n")
     file.close()
+
+
+def find_best_dist(df, distributions, path):
+    file = open(
+        os.path.join(path, 'Best-fitting_distributions'), "w")
+    for title in df:
+        print("fitting increments " + title)
+        f = Fitter(df[title] - df[title].mean(), xmin=-150, xmax=150, bins=100,
+                   distributions=distributions.keys(),
+                   timeout=30, density=True)
+        f.fit()
+        file.write("{}:\t{}\n".format(title, f.get_best("sumsquare_error")))

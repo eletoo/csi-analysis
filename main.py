@@ -1,6 +1,7 @@
 import os
 
 import best_fits_param_calculator
+import fitting_by_sc
 import merged_plotter
 import parameters_calculator
 import std_deviation_and_kurtosis_plotter
@@ -79,6 +80,16 @@ if __name__ == '__main__':
         "wrapcauchy": s.wrapcauchy
     }
 
+    #distributions = {
+    #    "beta": s.beta,
+    #    "exponential": s.expon,
+    #    "gamma": s.gamma,
+    #    "halfnorm": s.halfnorm,
+    #    "logistic": s.logistic,
+    #    "norm": s.norm,
+    #    "rayleigh": s.rayleigh
+    #}
+
     response = input("Fit distributions on data and increments? [Y/n]")
     if response.lower() == "y" or response == '':
         fit_data_by_sc(df, distributions)
@@ -128,5 +139,11 @@ if __name__ == '__main__':
     response = input("Calculate and plot their parameters for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
         best_fits_param_calculator.calculate_best_params(df, best_distributions)
+    if response.lower() == "n":
+        pass
+
+    response = input("Find distribution that best fits the increments of each sub-carrier? [Y/n]")
+    if response.lower() == "y" or response == '':
+        fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions, os.getcwd())
     if response.lower() == "n":
         pass
