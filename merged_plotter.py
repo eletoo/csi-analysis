@@ -20,7 +20,7 @@ def plot_merged_data(df: pandas.DataFrame, distributions, path: str = ""):
     for title in df:
         new_df = new_df.assign(title=df[title])
 
-    histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", os.path.join(path, 'merged_plot'))
+    histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", 'merged_plot', path)
     fit_merged_data_increments(new_df, os.path.join(os.getcwd(), path, 'merged_plot'), distributions)
     plot_merged_increments_histogram(new_df, path)
 

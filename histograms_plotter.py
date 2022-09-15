@@ -26,8 +26,7 @@ def create_batches(data, length):
     return [data[i:i + length] for i in range(0, len(data), length)]
 
 
-def plot_histogram_for_sc(title, df, size, path: str= ""):  # customizable: size is set as 365 because it
-    # divides the column length in 5 batches of the same size
+def plot_histogram_for_sc(title, df, size, path: str= ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 

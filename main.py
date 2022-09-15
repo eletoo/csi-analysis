@@ -16,8 +16,8 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csi_name = 'training1.csv'  # file containing the data to be processed
-    specific_path = "training1_192_168_2_4"  # folder path where to save the output of the code
+    csi_name = 'training1_192_168_2_10.csv'  # file containing the data to be processed
+    specific_path = "training1_192_168_2_10"  # folder path where to save the output of the code
     bandwidth = 20  # channel bandwidth: 20, 40, 80 MHz
     #######################################
 
@@ -25,12 +25,17 @@ if __name__ == '__main__':
 
     if bandwidth == 80:
         colnames = ["SC" + str(i) for i in range(0, 256)]
+        df = pd.read_csv(path, names=colnames, header=None)
     elif bandwidth == 40:
         colnames = ["SC" + str(i) for i in range(0, 128)]
+        df = pd.read_csv(path, names=colnames, header=None)
     elif bandwidth == 20:
         colnames = ["SC" + str(i) for i in range(0, 64)]
-
-    df = pd.read_csv(path, names=colnames, header=None)
+        # in our data columns and rows need to be transposed before being processed.
+        # if transposing is unneeded use: df = pd.read_csv(path, names=colnames, header=None)
+        df = pd.read_csv(path, header=None)
+        df = df.transpose()
+        df.columns = colnames
 
     if bandwidth == 80:
         with open(os.path.join(os.getcwd(), "unnecessaryPlots")) as f:
@@ -38,7 +43,7 @@ if __name__ == '__main__':
     elif bandwidth == 40:
         unnecessary_plots = []
     elif bandwidth == 20:
-        unnecessary_plots = []
+        unnecessary_plots = ['SC0', 'SC1', 'SC2', 'SC3', 'SC4', 'SC5', 'SC33', 'SC59', 'SC60', 'SC61', 'SC62', 'SC63']
 
     for title in df:
         if title in unnecessary_plots:
