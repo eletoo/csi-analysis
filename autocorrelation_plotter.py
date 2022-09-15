@@ -3,18 +3,21 @@ from matplotlib import pyplot as pl
 from statsmodels.graphics.tsaplots import plot_acf
 
 
-def plot_autocorrelation(df):
-    if not os.path.exists("auto-correlation_graphs"):
-        os.mkdir("auto-correlation_graphs")
+def plot_autocorrelation(df, path: str = ""):
+    if path != "" and not os.path.exists(path):
+        os.mkdir(path)
 
-    if not os.path.exists("auto-correlation_through_formulae"):
-        os.mkdir("auto-correlation_through_formulae")
+    if not os.path.exists(os.path.join(path, "auto-correlation_graphs")):
+        os.mkdir(os.path.join(path, "auto-correlation_graphs"))
+
+    if not os.path.exists(os.path.join(path, "auto-correlation_through_formulae")):
+        os.mkdir(os.path.join(path, "auto-correlation_through_formulae"))
 
     for title in df:
-        plot(df, title, 200)
+        plot(df, title, 200, path)
 
 
-def plot(df, title, tau_max):
+def plot(df, title, tau_max, path):
     # plot_acf(df[title], lags=500, use_vlines=True, alpha=None)
     data = []
     var = float(df[title].std()) ** 2
@@ -25,7 +28,7 @@ def plot(df, title, tau_max):
     pl.ylabel('Auto-correlation coefficient')
     pl.title("Auto-correlation " + title)
     pl.grid(visible=True)
-    pl.savefig(os.path.join(os.getcwd(), 'auto-correlation_through_formulae', 'figure' + title + '.png'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + title + '.png'))
     print("Plotting figure " + title)
     pl.close()
 

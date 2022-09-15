@@ -4,19 +4,22 @@ import os
 from fitter import Fitter, get_common_distributions, get_distributions
 
 
-def fit_data_by_sc(df, distributions):
-    if not os.path.exists("fit_by_sc_2"):
-        os.mkdir("fit_by_sc_2")
+def fit_data_by_sc(df, distributions, path: str = ""):
+    if path != "" and not os.path.exists(path):
+        os.mkdir(path)
 
-    if not os.path.exists("fit_by_sc"):
-        os.mkdir("fit_by_sc")
+    if not os.path.exists(os.path.join(path, "fit_by_sc_2")):
+        os.mkdir(os.path.join(path, "fit_by_sc_2"))
 
-    if not os.path.exists(os.path.join(os.getcwd(), "fit_increments", "Values")):
-        os.mkdir(os.path.join(os.getcwd(), "fit_increments", "Values"))
+    if not os.path.exists(os.path.join(path, "fit_by_sc")):
+        os.mkdir(os.path.join(path, "fit_by_sc"))
 
-    # fit(df, fitter.get_common_distributions(), 'fit_by_sc')
-    # fit(df, distributions, 'fit_by_sc_2')
-    fit_increments(df.diff().drop(labels=0, axis=0), distributions, 'fit_increments')
+    if not os.path.exists(os.path.join(os.getcwd(), path, "fit_increments", "Values")):
+        os.mkdir(os.path.join(os.getcwd(), path, "fit_increments", "Values"))
+
+    # fit(df, fitter.get_common_distributions(), os.path.join(path, 'fit_by_sc'))
+    # fit(df, distributions, os.path.join(path, 'fit_by_sc_2'))
+    fit_increments(df.diff().drop(labels=0, axis=0), distributions, os.path.join(path, 'fit_increments'))
 
 
 def fit(df, distributions, path):

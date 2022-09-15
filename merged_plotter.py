@@ -9,17 +9,20 @@ from fitting_by_sc import fit_distributions_and_save_params
 import histograms_plotter
 
 
-def plot_merged_data(df: pandas.DataFrame, distributions):
-    if not os.path.exists("merged_plot"):
-        os.mkdir("merged_plot")
+def plot_merged_data(df: pandas.DataFrame, distributions, path: str = ""):
+    if path != "" and not os.path.exists(path):
+        os.mkdir(path)
+
+    if not os.path.exists(os.path.join(path, "merged_plot")):
+        os.mkdir(os.path.join(path, "merged_plot"))
 
     new_df = pd.DataFrame(dtype=float)
     for title in df:
         new_df = new_df.assign(title=df[title])
 
-    histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", 'merged_plot')
-    fit_merged_data_increments(new_df, os.path.join(os.getcwd(), 'merged_plot'), distributions)
-    plot_merged_increments_histogram(new_df)
+    histograms_plotter.plot(new_df, new_df.mean(), "Merged data histogram", os.path.join(path, 'merged_plot'))
+    fit_merged_data_increments(new_df, os.path.join(os.getcwd(), path, 'merged_plot'), distributions)
+    plot_merged_increments_histogram(new_df, path)
 
 
 def fit_merged_data_increments(df: pandas.DataFrame, path: str, distributions):
@@ -33,10 +36,10 @@ def fit_merged_data_increments(df: pandas.DataFrame, path: str, distributions):
                        index=True)
 
 
-def plot_merged_increments_histogram(df: pandas.DataFrame):
+def plot_merged_increments_histogram(df: pandas.DataFrame, path):
     df.diff().hist(bins=100)
     pl.xlabel('Increment')
     pl.ylabel('Frequency')
     pl.title('Merged data Increments')
-    pl.savefig(os.path.join(os.getcwd(), 'merged_plot', 'figure Merged data Increments.png'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'merged_plot', 'figure Merged data Increments.png'))
     pl.close()

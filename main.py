@@ -15,13 +15,30 @@ import scipy.stats as s
 if __name__ == '__main__':
     import pandas as pd
 
-    path = os.path.join(os.getcwd(), 'csi.csv')
+    ########## INFORMATION SETUP ##########
+    csi_name = 'training1.csv'  # file containing the data to be processed
+    specific_path = "training1_192_168_2_4"  # folder path where to save the output of the code
+    bandwidth = 20  # channel bandwidth: 20, 40, 80 MHz
+    #######################################
 
-    colnames = ["SC" + str(i) for i in range(0, 256)]
+    path = os.path.join(os.getcwd(), csi_name)
+
+    if bandwidth == 80:
+        colnames = ["SC" + str(i) for i in range(0, 256)]
+    elif bandwidth == 40:
+        colnames = ["SC" + str(i) for i in range(0, 128)]
+    elif bandwidth == 20:
+        colnames = ["SC" + str(i) for i in range(0, 64)]
+
     df = pd.read_csv(path, names=colnames, header=None)
 
-    with open(os.path.join(os.getcwd(), "unnecessaryPlots")) as f:
-        unnecessary_plots = f.read().splitlines()
+    if bandwidth == 80:
+        with open(os.path.join(os.getcwd(), "unnecessaryPlots")) as f:
+            unnecessary_plots = f.read().splitlines()
+    elif bandwidth == 40:
+        unnecessary_plots = []
+    elif bandwidth == 20:
+        unnecessary_plots = []
 
     for title in df:
         if title in unnecessary_plots:
@@ -31,27 +48,32 @@ if __name__ == '__main__':
 
     response = input("Plot magnitude/relative frequency histogram for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        for title in colnames:
-            if title not in unnecessary_plots:
-                plot_histogram_for_sc(title, df)
+        batch_size = len(df)
+        for x in reversed(range(1, len(df))):
+            if len(df) % x == 0:
+                batch_size = x
+                break
+
+        for title in df:
+            plot_histogram_for_sc(title, df, batch_size, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Plot evolution in time for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        plot_time_evolution_for_sc(df)
+        plot_time_evolution_for_sc(df, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Plot increment/frequency histogram for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        plot_increments_for_sc(df)
+        plot_increments_for_sc(df, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Plot auto-correlation function for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        plot_autocorrelation(df)
+        plot_autocorrelation(df, path=specific_path)
     if response.lower() == "n":
         pass
 
@@ -80,7 +102,7 @@ if __name__ == '__main__':
         "wrapcauchy": s.wrapcauchy
     }
 
-    #distributions = {
+    # distributions = {
     #    "beta": s.beta,
     #    "exponential": s.expon,
     #    "gamma": s.gamma,
@@ -88,41 +110,42 @@ if __name__ == '__main__':
     #    "logistic": s.logistic,
     #    "norm": s.norm,
     #    "rayleigh": s.rayleigh
-    #}
+    # }
 
     response = input("Fit distributions on data and increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        fit_data_by_sc(df, distributions)
+        fit_data_by_sc(df, distributions, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Plot and fit merged data and their increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        merged_plotter.plot_merged_data(df, distributions)
+        merged_plotter.plot_merged_data(df, distributions, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Calculate variance, skewness and kurtosis for each sub-carrier and for their increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        parameters_calculator.calculate_params(df)
+        parameters_calculator.calculate_params(df, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Plot standard deviation and kurtosis for the increments? [Y/n]")
     if response.lower() == "y" or response == '':
-        std_deviation_and_kurtosis_plotter.plot_std_dev_and_kurtosis(df)
+        std_deviation_and_kurtosis_plotter.plot_std_dev_and_kurtosis(df, path=specific_path)
     if response.lower() == "n":
         pass
 
     # if there is not the desired csv file to read, then plot merged data to create it
     if os.stat(
-            os.path.join(os.getcwd(), "merged_plot",
+            os.path.join(os.getcwd(), specific_path, "merged_plot",
                          "Best five distributions fitting Increments of Merged Data.csv")).st_size == 0:
         merged_plotter.plot_merged_data(df, distributions)
 
     # read the csv file (read the five distributions that best fit the merged increments)
     f = pd.read_csv(
-        os.path.join(os.getcwd(), "merged_plot", "Best five distributions fitting Increments of Merged Data.csv"),
+        os.path.join(os.getcwd(), specific_path, "merged_plot",
+                     "Best five distributions fitting Increments of Merged Data.csv"),
         sep='\t', header=None)
     # take the first column (names of the distributions) - except for the title
     best_dists = f.iloc[:, 0].drop(0)
@@ -138,12 +161,13 @@ if __name__ == '__main__':
 
     response = input("Calculate and plot their parameters for each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        best_fits_param_calculator.calculate_best_params(df, best_distributions)
+        best_fits_param_calculator.calculate_best_params(df, best_distributions, path=specific_path)
     if response.lower() == "n":
         pass
 
     response = input("Find distribution that best fits the increments of each sub-carrier? [Y/n]")
     if response.lower() == "y" or response == '':
-        fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions, os.getcwd())
+        fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions,
+                                     os.path.join(os.getcwd(), specific_path))
     if response.lower() == "n":
         pass

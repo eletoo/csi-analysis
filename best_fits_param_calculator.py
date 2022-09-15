@@ -5,12 +5,15 @@ from fitter import Fitter
 import matplotlib.pyplot as pl
 
 
-def calculate_best_params(df: pd.DataFrame, distributions):
-    if not os.path.exists(os.path.join(os.getcwd(), "best_fits_params")):
-        os.mkdir(os.path.join(os.getcwd(), "best_fits_params"))
+def calculate_best_params(df: pd.DataFrame, distributions, path: str = ""):
+    if path != "" and not os.path.exists(path):
+        os.mkdir(path)
 
-    if not os.path.exists(os.path.join(os.getcwd(), "best_fits_params", "subcarriers")):
-        os.mkdir(os.path.join(os.getcwd(), "best_fits_params", "subcarriers"))
+    if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params")):
+        os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params"))
+
+    if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params", "subcarriers")):
+        os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params", "subcarriers"))
 
     df1 = df.diff().drop(labels=0, axis=0)
 
@@ -23,9 +26,10 @@ def calculate_best_params(df: pd.DataFrame, distributions):
         f.fit()
         fitted_results[title] = f.fitted_param
         print("fitting increments of " + title)
-        file = open(os.path.join(
-            'best_fits_params', 'subcarriers', 'Parameters of best five distributions on ' + title + 'Increments.txt'),
-            "w")
+        file = open(os.path.join(path,
+                                 'best_fits_params', 'subcarriers',
+                                 'Parameters of best five distributions on ' + title + 'Increments.txt'),
+                    "w")
         for dist, values in f.fitted_param.items():
             if dist in distributions.keys():
                 file.write(f"{dist} - (")
@@ -36,10 +40,10 @@ def calculate_best_params(df: pd.DataFrame, distributions):
 
         file.close()
 
-    plot_parameters(distributions, fitted_results)
+    plot_parameters(distributions, fitted_results, path)
 
 
-def plot_parameters(distributions, fitted_results):
+def plot_parameters(distributions, fitted_results, path):
     for distribution in distributions.keys():
         params = [x.name for x in distributions.get(distribution)._shape_info()] + ["location", "scale"]
         for i, param in enumerate(params):
@@ -50,7 +54,7 @@ def plot_parameters(distributions, fitted_results):
             pl.xlabel('Sub-carriers')
             pl.ylabel(param)
             pl.title(distribution)
-            if not os.path.exists(os.path.join(os.getcwd(), "best_fits_params", distribution)):
-                os.mkdir(os.path.join(os.getcwd(), "best_fits_params", distribution))
-            pl.savefig(os.path.join(os.getcwd(), "best_fits_params", distribution, f"{param}.png"))
+            if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params", distribution)):
+                os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params", distribution))
+            pl.savefig(os.path.join(os.getcwd(), path, "best_fits_params", distribution, f"{param}.png"))
             pl.close()

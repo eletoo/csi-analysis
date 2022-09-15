@@ -26,8 +26,10 @@ def create_batches(data, length):
     return [data[i:i + length] for i in range(0, len(data), length)]
 
 
-def plot_histogram_for_sc(title, df, size=365):  # customizable: size is set as 365 because it
+def plot_histogram_for_sc(title, df, size, path: str= ""):  # customizable: size is set as 365 because it
     # divides the column length in 5 batches of the same size
+    if path != "" and not os.path.exists(path):
+        os.mkdir(path)
 
     col = df[title]
 
@@ -48,10 +50,10 @@ def plot_histogram_for_sc(title, df, size=365):  # customizable: size is set as 
     # stationary processes
     for batch in create_batches(df, size):
         process_batch(column_mean, batch[title], size)
-    plot(col, column_mean, title, 'histograms')
+    plot(col, column_mean, title, 'histograms', path)
 
 
-def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str):
+def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str, path: str):
     c = c - column_mean
     c.hist(bins=100, density=True)
     pl.xlabel('Magnitude')
@@ -59,7 +61,7 @@ def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str):
     pl.title(title)
     pl.xlim(-150, 150)
     # pl.show()
-    if not os.path.exists("histograms"):
-        os.mkdir("histograms")
-    pl.savefig(os.path.join(os.getcwd(), dir_name, 'figure' + title + '.png'))
+    if not os.path.exists(os.path.join(path, "histograms")):
+        os.mkdir(os.path.join(path, "histograms"))
+    pl.savefig(os.path.join(os.getcwd(), path, dir_name, 'figure' + title + '.png'))
     pl.close()
