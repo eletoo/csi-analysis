@@ -11,14 +11,15 @@ def plot_autocorrelation(df):
         os.mkdir("auto-correlation_through_formulae")
 
     for title in df:
-        plot(df, title, 500)
+        plot(df, title, 200)
 
 
 def plot(df, title, tau_max):
     # plot_acf(df[title], lags=500, use_vlines=True, alpha=None)
     data = []
+    var = float(df[title].std()) ** 2
     for tau in range(0, tau_max + 1):
-        data.append(autocorrelation(df, title, tau_max, tau))
+        data.append(autocorrelation(df, title, tau_max, tau, var))
     pl.plot(data)
     pl.xlabel('Packet')
     pl.ylabel('Auto-correlation coefficient')
@@ -38,5 +39,5 @@ def autocovariance(df, title, tau_max, tau):
     return coefficient * sum
 
 
-def autocorrelation(df, title, tau_max, tau):
-    return autocovariance(df, title, tau_max, tau) / float(df[title].std()) ** 2
+def autocorrelation(df, title, tau_max, tau, var):
+    return autocovariance(df, title, tau_max, tau) / var
