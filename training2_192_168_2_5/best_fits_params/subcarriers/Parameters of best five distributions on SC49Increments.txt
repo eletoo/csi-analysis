@@ -1,0 +1,5 @@
+norm - (location:	0.06074977	scale:	34.67528502	)
+gennorm - (beta:	1.56432819	location:	0.91328684	scale:	41.72979507	)
+powernorm - (c:	2.60289200	location:	33.60889789	scale:	44.74143831	)
+beta - (a:	8007.15486957	b:	270.64165383	location:	-17142.07480620	scale:	17721.54048933	)
+lognorm - (s:	0.00698106	location:	-4959.41883601	scale:	4959.38923963	)

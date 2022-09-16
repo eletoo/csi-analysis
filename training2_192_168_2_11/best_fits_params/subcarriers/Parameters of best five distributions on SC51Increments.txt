@@ -1,0 +1,5 @@
+gennorm - (beta:	3.87579258	location:	2.24707110	scale:	119.37898819	)
+beta - (a:	2.09405450	b:	1.91775537	location:	-159.50238114	scale:	312.31212793	)
+powernorm - (c:	1.10078409	location:	9.62055997	scale:	70.79942662	)
+gamma - (a:	1452.29918254	location:	-2623.15439847	scale:	1.80859551	)
+chi - (df:	3.11345627	location:	-180.44203211	scale:	108.72947327	)

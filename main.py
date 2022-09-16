@@ -16,8 +16,8 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csi_name = 'training2_192_168_2_4.csv'  # file containing the data to be processed
-    specific_path = "training2_192_168_2_4"  # folder path where to save the output of the code
+    csi_name = 'training3_192_168_2_11.csv'  # file containing the data to be processed
+    specific_path = "training3_192_168_2_11"  # folder path where to save the output of the code, can be an empty string
     bandwidth = 20  # channel bandwidth: 20, 40, 80 MHz
     #######################################
 

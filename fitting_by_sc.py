@@ -61,6 +61,13 @@ def fit_distributions_and_save_params(distributions, f, file):
 
 
 def find_best_dist(df, distributions, path):
+    """
+
+    :param df:
+    :param distributions:
+    :param path:
+    :return: None
+    """
     file = open(
         os.path.join(path, 'Best-fitting_distributions'), "w")
     for title in df:

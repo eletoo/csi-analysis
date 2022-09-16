@@ -1,0 +1,5 @@
+norm - (location:	-0.05456843	scale:	35.91186948	)
+beta - (a:	170006.19009183	b:	7698.17159301	location:	-71144.74427036	scale:	74366.24346150	)
+powernorm - (c:	1.20941530	location:	6.26592631	scale:	37.95921128	)
+loggamma - (c:	855.84860861	location:	-7098.03816928	scale:	1051.31618141	)
+powerlognorm - (c:	0.00204438	s:	0.10921266	location:	-147.76208469	scale:	4.81691053	)
