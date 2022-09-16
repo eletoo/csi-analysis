@@ -16,8 +16,8 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csi_name = 'training1_192_168_2_10.csv'  # file containing the data to be processed
-    specific_path = "training1_192_168_2_10"  # folder path where to save the output of the code
+    csi_name = 'training2_192_168_2_4.csv'  # file containing the data to be processed
+    specific_path = "training2_192_168_2_4"  # folder path where to save the output of the code
     bandwidth = 20  # channel bandwidth: 20, 40, 80 MHz
     #######################################
 
@@ -43,7 +43,8 @@ if __name__ == '__main__':
     elif bandwidth == 40:
         unnecessary_plots = []
     elif bandwidth == 20:
-        unnecessary_plots = ['SC0', 'SC1', 'SC2', 'SC3', 'SC4', 'SC5', 'SC33', 'SC59', 'SC60', 'SC61', 'SC62', 'SC63']
+        unnecessary_plots = ['SC0', 'SC1', 'SC2', 'SC3', 'SC4', 'SC5', 'SC32', 'SC33', 'SC59', 'SC60', 'SC61',
+                             'SC62', 'SC63']
 
     for title in df:
         if title in unnecessary_plots:
