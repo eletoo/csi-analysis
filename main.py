@@ -108,15 +108,17 @@ if __name__ == '__main__':
         "wrapcauchy": s.wrapcauchy
     }
 
-    # distributions = {
-    #    "beta": s.beta,
-    #    "exponential": s.expon,
-    #    "gamma": s.gamma,
-    #    "halfnorm": s.halfnorm,
-    #    "logistic": s.logistic,
-    #    "norm": s.norm,
-    #    "rayleigh": s.rayleigh
-    # }
+    distributions = {
+        "gamma": s.gamma,  # gamma
+        "genextreme": s.genextreme,  # generalized extreme value (weibull+frechét+gumbel)
+        "gengamma": s.gengamma,  # generalized gamma
+        "genlogistic": s.genlogistic,  # generalized logistic
+        "gennorm": s.gennorm,  # generalized normal
+        "logistic": s.logistic,  # logistic
+        "norm": s.norm,  # normal
+        "weibull_max": s.weibull_max,  # inverted weibull distribution
+        "weibull_min": s.weibull_min  # actual weibull distribution
+    }
 
     response = input("Fit distributions on data and increments? [Y/n]")
     if response.lower() == "y" or response == '':

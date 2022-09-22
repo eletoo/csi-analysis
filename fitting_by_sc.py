@@ -20,9 +20,16 @@ def fit_data_by_sc(df, distributions, path: str = ""):
     if not os.path.exists(os.path.join(os.getcwd(), path, "fit_increments", "Values")):
         os.mkdir(os.path.join(os.getcwd(), path, "fit_increments", "Values"))
 
+    if not os.path.exists(os.path.join(path, "fit_specific_dists")):
+        os.mkdir(os.path.join(path, "fit_specific_dists"))
+
+    if not os.path.exists(os.path.join(os.getcwd(), path, "fit_specific_dists", "Values")):
+        os.mkdir(os.path.join(os.getcwd(), path, "fit_specific_dists", "Values"))
+
     # fit(df, fitter.get_common_distributions(), os.path.join(path, 'fit_by_sc'))
     # fit(df, distributions, os.path.join(path, 'fit_by_sc_2'))
-    fit_increments(df.diff().drop(labels=0, axis=0), distributions, os.path.join(path, 'fit_increments'))
+    # fit_increments(df.diff().drop(labels=0, axis=0), distributions, os.path.join(path, 'fit_increments'))
+    fit_increments(df.diff().drop(labels=0, axis=0), distributions, os.path.join(path, 'fit_specific_dists'))
 
 
 def fit(df, distributions, path):
@@ -61,13 +68,6 @@ def fit_distributions_and_save_params(distributions, f, file):
 
 
 def find_best_dist(df, distributions, path):
-    """
-
-    :param df:
-    :param distributions:
-    :param path:
-    :return: None
-    """
     file = open(
         os.path.join(path, 'Best-fitting_distributions'), "w")
     for title in df:
