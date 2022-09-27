@@ -5,6 +5,7 @@ import fitting_by_sc
 import merged_plotter
 import parameters_calculator
 import std_deviation_and_kurtosis_plotter
+import violin_plotter
 from autocorrelation_plotter import plot_autocorrelation
 from histograms_plotter import plot_histogram_for_sc
 from increments_plotter import plot_increments_for_sc
@@ -179,3 +180,8 @@ if __name__ == '__main__':
     if response.lower() == "n":
         pass
 
+    response = input("Create violin plot for mean values and variances? [Y/n]")
+    if response.lower() == "y" or response == '':
+        violin_plotter.plot_violin(df, path=specific_path)
+    if response.lower() == "n":
+        pass
