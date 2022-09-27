@@ -1,4 +1,5 @@
 import os
+import matplotlib.pyplot as pl
 
 
 def calculate_params(df, path: str = ""):

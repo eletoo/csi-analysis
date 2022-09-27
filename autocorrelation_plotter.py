@@ -21,7 +21,7 @@ def plot(df, title, tau_max, path):
     # plot_acf(df[title], lags=500, use_vlines=True, alpha=None)
     data = []
     var = float(df[title].std()) ** 2
-    for tau in range(0, tau_max + 1):
+    for tau in range(1, tau_max + 2):
         data.append(autocorrelation(df, title, tau_max, tau, var))
     pl.plot(data)
     pl.xlabel('Packet')
@@ -35,9 +35,9 @@ def plot(df, title, tau_max, path):
 
 def autocovariance(df, title, tau_max, tau):
     mean = float(df[title].mean())
-    coefficient = 1 / (df[title].size - tau_max)
+    coefficient = 1 / (df[title].size - (df[title].size - tau))  # (df[title].size - tau) = tau_max
     sum = 0
-    for j in range(0, df[title].size - tau_max):
+    for j in range(1, df[title].size - (df[title].size - tau) + 1):  # (df[title].size - tau) = tau_max
         sum = sum + (df[title][j] - mean) * (df[title][j + tau] - mean)
     return coefficient * sum
 

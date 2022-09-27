@@ -16,9 +16,9 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csi_name = 'training3_192_168_2_11.csv'  # file containing the data to be processed
-    specific_path = "training3_192_168_2_11"  # folder path where to save the output of the code, can be an empty string
-    bandwidth = 20  # channel bandwidth: 20, 40, 80 MHz
+    csi_name = 'csi.csv'  # file containing the data to be processed
+    specific_path = ""  # folder path where to save the output of the code, can be an empty string
+    bandwidth = 80  # channel bandwidth: 20, 40, 80 MHz
     #######################################
 
     path = os.path.join(os.getcwd(), csi_name)
@@ -59,9 +59,9 @@ if __name__ == '__main__':
             if len(df) % x == 0:
                 batch_size = x
                 break
-
         for title in df:
             plot_histogram_for_sc(title, df, batch_size, path=specific_path)
+
     if response.lower() == "n":
         pass
 
@@ -145,16 +145,15 @@ if __name__ == '__main__':
         pass
 
     # if there is not the desired csv file to read, then plot merged data to create it
-    if os.stat(
-            os.path.join(os.getcwd(), specific_path, "merged_plot",
-                         "Best five distributions fitting Increments of Merged Data.csv")).st_size == 0:
-        merged_plotter.plot_merged_data(df, distributions)
+    if not os.path.exists(os.path.join(specific_path, 'merged_plot',
+                                       'Best five distributions fitting Increments of Merged Data.csv')):
+        merged_plotter.plot_merged_data(df, distributions, path=specific_path)
 
     # read the csv file (read the five distributions that best fit the merged increments)
-    f = pd.read_csv(
-        os.path.join(os.getcwd(), specific_path, "merged_plot",
-                     "Best five distributions fitting Increments of Merged Data.csv"),
-        sep='\t', header=None)
+    file = open(os.path.join(os.getcwd(), specific_path, 'merged_plot',
+                             'Best five distributions fitting Increments of Merged Data.csv'), "r")
+    f = pd.read_csv(file, sep='\t', header=None)
+
     # take the first column (names of the distributions) - except for the title
     best_dists = f.iloc[:, 0].drop(0)
 
@@ -179,3 +178,4 @@ if __name__ == '__main__':
                                      os.path.join(os.getcwd(), specific_path))
     if response.lower() == "n":
         pass
+
