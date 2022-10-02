@@ -6,17 +6,17 @@ def calculate_params(df, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    if not os.path.exists(os.path.join(path, "params")):
-        os.mkdir(os.path.join(path, "params"))
+    if not os.path.exists(os.path.join(path, "csi/params")):
+        os.mkdir(os.path.join(path, "csi/params"))
 
     df1 = df.diff()
     df1 = df1.drop(labels=0, axis=0)
     # calculate_variance(df, "params\\variance.txt")
     # calculate_skewness(df, "params\\skewness.txt")
     # calculate_kurtosis(df, "params\\kurtosis.txt")
-    calculate_variance(df1, os.path.join(path, "params", "increments_variance.txt"))
-    calculate_skewness(df1, os.path.join(path, "params", "increments_skewness.txt"))
-    calculate_kurtosis(df1, os.path.join(path, "params", "increments_kurtosis.txt"))
+    calculate_variance(df1, os.path.join(path, "csi/params", "increments_variance.txt"))
+    calculate_skewness(df1, os.path.join(path, "csi/params", "increments_skewness.txt"))
+    calculate_kurtosis(df1, os.path.join(path, "csi/params", "increments_kurtosis.txt"))
 
 
 def calculate_variance(df, path):

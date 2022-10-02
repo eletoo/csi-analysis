@@ -1,5 +1,0 @@
-norm - (location:	0.00000000	scale:	19.46051502	)
-powernorm - (c:	0.99547121	location:	0.00000000	scale:	19.43373422	)
-gamma - (a:	414.23057147	location:	-396.10184372	scale:	0.95623429	)
-f - (dfn:	1.61822402	dfd:	0.43747189	location:	-68.59724893	scale:	1.84729789	)
-chi - (df:	48.50443004	location:	-191.20166893	scale:	27.59493236	)

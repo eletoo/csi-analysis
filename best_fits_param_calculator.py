@@ -9,11 +9,11 @@ def calculate_best_params(df: pd.DataFrame, distributions, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params")):
-        os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params"))
+    if not os.path.exists(os.path.join(os.getcwd(), path, "csi/best_fits_params")):
+        os.mkdir(os.path.join(os.getcwd(), path, "csi/best_fits_params"))
 
-    if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params", "subcarriers")):
-        os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params", "subcarriers"))
+    if not os.path.exists(os.path.join(os.getcwd(), path, "csi/best_fits_params", "subcarriers")):
+        os.mkdir(os.path.join(os.getcwd(), path, "csi/best_fits_params", "subcarriers"))
 
     df1 = df.diff().drop(labels=0, axis=0)
 
@@ -27,7 +27,7 @@ def calculate_best_params(df: pd.DataFrame, distributions, path: str = ""):
         fitted_results[title] = f.fitted_param
         print("fitting increments of " + title)
         file = open(os.path.join(path,
-                                 'best_fits_params', 'subcarriers',
+                                 'csi/best_fits_params', 'subcarriers',
                                  'Parameters of best five distributions on ' + title + 'Increments.txt'),
                     "w")
         for dist, values in f.fitted_param.items():
@@ -54,7 +54,7 @@ def plot_parameters(distributions, fitted_results, path):
             pl.xlabel('Sub-carriers')
             pl.ylabel(param)
             pl.title(distribution)
-            if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params", distribution)):
-                os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params", distribution))
-            pl.savefig(os.path.join(os.getcwd(), path, "best_fits_params", distribution, f"{param}.png"))
+            if not os.path.exists(os.path.join(os.getcwd(), path, "csi/best_fits_params", distribution)):
+                os.mkdir(os.path.join(os.getcwd(), path, "csi/best_fits_params", distribution))
+            pl.savefig(os.path.join(os.getcwd(), path, "csi/best_fits_params", distribution, f"{param}.png"))
             pl.close()

@@ -7,13 +7,13 @@ def plot_time_evolution_for_sc(df, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    if not os.path.exists(os.path.join(path, "time_evolution")):
-        os.mkdir(os.path.join(path, "time_evolution"))
+    if not os.path.exists(os.path.join(path, "csi/time_evolution")):
+        os.mkdir(os.path.join(path, "csi/time_evolution"))
 
     for title in df:
         pl.plot(df[title])
         pl.xlabel("Packet")
         pl.ylabel("Magnitude")
-        pl.savefig(os.path.join(os.getcwd(), path, 'time_evolution', 'figure' + title + '.png'))
+        pl.savefig(os.path.join(os.getcwd(), path, 'csi/time_evolution', 'figure' + str(title) + '.png'))
         pl.close()
-        print("plotting graph " + title)
+        print("plotting graph " + str(title))
