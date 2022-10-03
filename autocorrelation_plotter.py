@@ -7,11 +7,11 @@ def plot_autocorrelation(df, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    if not os.path.exists(os.path.join(path, "csi/auto-correlation_graphs")):
-        os.mkdir(os.path.join(path, "csi/auto-correlation_graphs"))
+    if not os.path.exists(os.path.join(path, "auto-correlation_graphs")):
+        os.mkdir(os.path.join(path, "auto-correlation_graphs"))
 
-    if not os.path.exists(os.path.join(path, "csi/auto-correlation_through_formulae")):
-        os.mkdir(os.path.join(path, "csi/auto-correlation_through_formulae"))
+    if not os.path.exists(os.path.join(path, "auto-correlation_through_formulae")):
+        os.mkdir(os.path.join(path, "auto-correlation_through_formulae"))
 
     for title in df:
         plot(df, title, 200, path)
@@ -28,7 +28,7 @@ def plot(df, title, tau_max, path):
     pl.ylabel('Auto-correlation coefficient')
     pl.title("Auto-correlation " + str(title))
     pl.grid(visible=True)
-    pl.savefig(os.path.join(os.getcwd(), path, 'csi/auto-correlation_through_formulae', 'figure' + str(title) + '.png'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + str(title) + '.png'))
     print("Plotting figure " + str(title))
     pl.close()
 

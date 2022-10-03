@@ -148,12 +148,12 @@ if __name__ == '__main__':
         pass
 
     # if there is not the desired csv file to read, then plot merged data to create it
-    if not os.path.exists(os.path.join(specific_path, 'csi/merged_plot',
+    if not os.path.exists(os.path.join(specific_path, 'merged_plot',
                                        'Best five distributions fitting Increments of Merged Data.csv')):
         merged_plotter.plot_merged_data(df, distributions, path=specific_path)
 
     # read the csv file (read the five distributions that best fit the merged increments)
-    file = open(os.path.join(os.getcwd(), specific_path, 'csi/merged_plot',
+    file = open(os.path.join(os.getcwd(), specific_path, 'merged_plot',
                              'Best five distributions fitting Increments of Merged Data.csv'), "r")
     f = pd.read_csv(file, sep='\t', header=None)
 
@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
     response = input("Process artificial_increments trace? [Y/n]")
     if response.lower() == "y" or response == '':
-        artificial_path = os.path.join(os.getcwd(), specific_path, 'csi/artificial_increments')
+        artificial_path = os.path.join(os.getcwd(), specific_path, 'artificial_increments')
         if not os.path.exists(artificial_path):
             os.mkdir(os.path.join(os.getcwd(), specific_path, artificial_path))
         artificial_trace_processor.process_artificial_increments(path=artificial_path, num_subcarriers=len(colnames))

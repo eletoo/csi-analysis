@@ -8,8 +8,8 @@ def plot_std_dev_and_kurtosis(df: pandas.DataFrame, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    if not os.path.exists(os.path.join(path, "csi/params")):
-        os.mkdir(os.path.join(path, "csi/params"))
+    if not os.path.exists(os.path.join(path, "params")):
+        os.mkdir(os.path.join(path, "params"))
 
     df1 = df.diff().drop(labels=0, axis=0)
     std_devs = []
@@ -33,4 +33,4 @@ def plot_std_dev_and_kurtosis(df: pandas.DataFrame, path: str = ""):
     ax1.set_ylabel('Standard deviation of the increments', color='g')
     ax2.set_ylabel('Kurtosis of the increments', color='b')
     # plt.show()
-    plt.savefig(os.path.join(os.getcwd(), path, 'csi/params', 'std_deviation_and_kurtosis.png'))
+    plt.savefig(os.path.join(os.getcwd(), path, 'params', 'std_deviation_and_kurtosis.png'))
