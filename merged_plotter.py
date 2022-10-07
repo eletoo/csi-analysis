@@ -41,5 +41,5 @@ def plot_merged_increments_histogram(df: pandas.DataFrame, path):
     pl.xlabel('Increment')
     pl.ylabel('Frequency')
     pl.title('Merged data Increments')
-    pl.savefig(os.path.join(os.getcwd(), path, 'merged_plot', 'figure Merged data Increments.png'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'merged_plot', 'figure Merged data Increments.pdf'))
     pl.close()

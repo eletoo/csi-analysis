@@ -14,6 +14,9 @@ def plot_time_evolution_for_sc(df, path: str = ""):
         pl.plot(df[title])
         pl.xlabel("Packet")
         pl.ylabel("Magnitude")
-        pl.savefig(os.path.join(os.getcwd(), path, 'time_evolution', 'figure' + str(title) + '.png'))
+        pl.title(title)
+        pl.rcParams.update({'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large',
+                            'ytick.labelsize': 'large'})
+        pl.savefig(os.path.join(os.getcwd(), path, 'time_evolution', 'figure' + str(title) + '.pdf'))
         pl.close()
         print("plotting graph " + str(title))

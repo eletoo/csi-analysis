@@ -27,8 +27,10 @@ def plot(df, title, tau_max, path):
     pl.xlabel('Packet')
     pl.ylabel('Auto-correlation coefficient')
     pl.title("Auto-correlation " + str(title))
+    pl.rcParams.update(
+        {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})
     pl.grid(visible=True)
-    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + str(title) + '.png'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + str(title) + '.pdf'))
     print("Plotting figure " + str(title))
     pl.close()
 

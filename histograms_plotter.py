@@ -1,5 +1,6 @@
 import os
 
+import matplotlib
 import pandas
 from matplotlib import pyplot as pl
 
@@ -26,7 +27,7 @@ def create_batches(data, length):
     return [data[i:i + length] for i in range(0, len(data), length)]
 
 
-def plot_histogram_for_sc(title, df, size, path: str= ""):
+def plot_histogram_for_sc(title, df, size, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
@@ -60,7 +61,9 @@ def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str, pat
     pl.title(title)
     pl.xlim(-150, 150)
     # pl.show()
+    pl.rcParams.update(
+        {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})
     if not os.path.exists(os.path.join(path, "histograms")):
         os.mkdir(os.path.join(path, "histograms"))
-    pl.savefig(os.path.join(os.getcwd(), path, dir_name, 'figure' + str(title) + '.png'))
+    pl.savefig(os.path.join(os.getcwd(), path, dir_name, 'figure' + str(title) + '.pdf'))
     pl.close()

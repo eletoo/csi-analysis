@@ -56,5 +56,5 @@ def plot_parameters(distributions, fitted_results, path):
             pl.title(distribution)
             if not os.path.exists(os.path.join(os.getcwd(), path, "best_fits_params", distribution)):
                 os.mkdir(os.path.join(os.getcwd(), path, "best_fits_params", distribution))
-            pl.savefig(os.path.join(os.getcwd(), path, "best_fits_params", distribution, f"{param}.png"))
+            pl.savefig(os.path.join(os.getcwd(), path, "best_fits_params", distribution, f"{param}.pdf"))
             pl.close()

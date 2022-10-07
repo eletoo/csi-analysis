@@ -24,6 +24,8 @@ def plot(df, path):
         pl.xlabel('Increment')
         pl.ylabel('Frequency')
         pl.title(title)
-        pl.savefig(os.path.join(os.getcwd(), path, 'increments_hist', 'figure' + str(title) + '.png'))
+        pl.rcParams.update({'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large',
+                            'ytick.labelsize': 'large'})
+        pl.savefig(os.path.join(os.getcwd(), path, 'increments_hist', 'figure' + str(title) + '.pdf'))
         print("Plotting histogram " + str(title))
         pl.close()

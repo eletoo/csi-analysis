@@ -1,5 +1,1 @@
-beta - (a:	11.51332525	b:	12.99869217	location:	-130.38045646	scale:	277.60183040	)
-chi2 - (df:	0.12815864	location:	-85.09733751	scale:	2.54470776	)
-gamma - (a:	2922.57250933	location:	-1483.17429923	scale:	0.50749234	)
-chi - (df:	24.99594011	location:	-193.41686207	scale:	39.05311060	)
-lognorm - (s:	4.11425031	location:	-85.09733758	scale:	1.66145312	)
+norm - (location:	0.01223818	scale:	27.43455642	)
