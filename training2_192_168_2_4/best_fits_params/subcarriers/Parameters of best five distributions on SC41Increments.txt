@@ -1,5 +1,1 @@
 norm - (location:	-0.09068233	scale:	37.89741257	)
-gennorm - (beta:	1.58925249	location:	-0.79712817	scale:	46.26747283	)
-gamma - (a:	141.19480023	location:	-450.07906306	scale:	3.18700395	)
-beta - (a:	120.54557509	b:	1800.99210396	location:	-429.64692032	scale:	6847.44213216	)
-lognorm - (s:	0.05909705	location:	-640.40838403	scale:	639.20023514	)

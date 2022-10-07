@@ -142,3 +142,34 @@ in [main.py](main.py):
 * [time_evolution_plotter.py](time_evolution_plotter.py): contains a function that is used
   to plot a graph representing the evolution of the signal
   magnitude over time for each sub-carrier
+
+## Libraries
+
+The code is written in Python 3.6.5 and uses the following libraries:
+
+* [numpy](https://www.numpy.org/)
+* [pandas](https://pandas.pydata.org/)
+* [matplotlib](https://matplotlib.org/)
+* [scipy](https://www.scipy.org/)
+* [statsmodels](https://www.statsmodels.org/stable/index.html)
+* [fitter](https://github.com/cokelaer/fitter)
+
+The required versions are specified in [requirements.txt](requirements.txt).
+
+## How to run the code
+
+The code can be run by executing [main.py](main.py) using Python 3.6.5.
+
+## Notes
+
+The code is not optimized for speed yet.
+It is intended to be used as the source code to plot the data and graphs
+described in the previous sections.
+
+The folders whose contents have been used in the thesis titled
+''Analysis and Characterization of Wi-Fi Channel State Information''
+by Elena Tonini are:
+
+* [csi](csi)
+* [training2_192_168_2_4](training2_192_168_2_4)
+* [training2_192_168_2_10](training2_192_168_2_10)
