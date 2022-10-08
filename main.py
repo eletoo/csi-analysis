@@ -187,6 +187,15 @@ if __name__ == '__main__':
         artificial_path = os.path.join(os.getcwd(), specific_path, 'artificial_increments')
         if not os.path.exists(artificial_path):
             os.mkdir(os.path.join(os.getcwd(), specific_path, artificial_path))
-        artificial_trace_processor.process_artificial_increments(path=artificial_path, num_subcarriers=len(colnames))
+
+        if not os.path.exists(os.path.join(specific_path, 'normal_distribution_info.csv')):
+            fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions,
+                                         os.path.join(os.getcwd(), specific_path))
+        file_name = "normal_distribution_info.csv"
+        data = pd.read_csv(os.path.join(specific_path, file_name), header=None)
+        std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
+        artificial_trace_processor.process_artificial_increments(path=artificial_path, sub_carriers=df.columns,
+                                                                 std_dev=std_dev,
+                                                                 num_samples=10000)
     if response.lower() == "n":
         pass

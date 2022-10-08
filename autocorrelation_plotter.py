@@ -19,8 +19,8 @@ def plot_autocorrelation(df, path: str = ""):
 
 def plot(df, title, tau_max, path):
     data = []
+    # df = df.diff().drop(labels=0, axis=0)  # uncomment this line to plot autocorrelation of increments
     var = float(df[title].std()) ** 2
-    df = df.diff() # uncomment this line to plot autocorrelation of increments
     data.append(1)
     for tau in range(1, tau_max + 1):
         data.append(autocorrelation(df, title, tau_max, tau, var))
@@ -31,7 +31,10 @@ def plot(df, title, tau_max, path):
     pl.rcParams.update(
         {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})
     pl.grid(visible=True)
-    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_graphs', 'figure' + str(title) + '.pdf'))
+    # pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_graphs', 'figure' + str(title) + '.pdf')) #
+    # uncomment this line to plot autocorrelation of increments
+
+    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + str(title) + '.pdf'))
     print("Plotting figure " + str(title))
     pl.close()
 
