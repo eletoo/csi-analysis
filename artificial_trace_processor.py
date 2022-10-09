@@ -9,7 +9,7 @@ import increments_plotter
 import time_evolution_plotter
 
 
-def process_artificial_increments(path, sub_carriers, std_dev, num_samples=1000):
+def process_artificial_increments(real_increments, path, sub_carriers, std_dev, num_samples=1000):
     new_data = generate_artificial_increments(sub_carriers=sub_carriers, std_dev=std_dev, num_samples=num_samples)
 
     if not os.path.exists(os.path.join(path, "increments_hist")):
@@ -17,7 +17,7 @@ def process_artificial_increments(path, sub_carriers, std_dev, num_samples=1000)
     for title in sub_carriers:
         histograms_plotter.plot_histogram_for_sc(title, new_data, num_samples, path)
     time_evolution_plotter.plot_time_evolution_for_sc(new_data, path=path)
-    increments_plotter.plot_increments_for_sc(new_data, path=path)
+    increments_plotter.plot_superimposed_increments(real_increments, new_data, path=path)
     autocorrelation_plotter.plot_autocorrelation(new_data, path=path)
 
 

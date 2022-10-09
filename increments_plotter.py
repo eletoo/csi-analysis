@@ -18,6 +18,27 @@ def plot_increments_for_sc(df, path: str = ""):
         f.write(str(sum / len(df.columns)))
 
 
+def plot_superimposed_increments(real, artificial, path: str = ""):
+    if path != "" and not os.path.exists(path):
+        os.mkdir(path)
+
+    if not os.path.exists(os.path.join(path, "superimposed_increments")):
+        os.mkdir(os.path.join(path, "superimposed_increments"))
+
+    for title in real:
+        pl.hist(real[title], label="Real", bins=100, alpha=0.5)
+        pl.hist(artificial[title].diff(), label="Artificial", bins=100, alpha=0.5)
+        pl.xlabel('Increment')
+        pl.ylabel('Frequency')
+        pl.title(title)
+        pl.rcParams.update({'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large',
+                            'ytick.labelsize': 'large'})
+        pl.legend()
+        pl.savefig(os.path.join(os.getcwd(), path, 'superimposed_increments', 'figure' + str(title) + '.pdf'))
+        print("Plotting superimposed increments " + str(title))
+        pl.close()
+
+
 def plot(df, path):
     for title in df:
         df[title].hist(bins=100)
