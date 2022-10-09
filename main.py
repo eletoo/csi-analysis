@@ -194,7 +194,8 @@ if __name__ == '__main__':
         file_name = "normal_distribution_info.csv"
         data = pd.read_csv(os.path.join(specific_path, file_name), header=None)
         std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
-        artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path, sub_carriers=df.columns,
+        artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path,
+                                                                 sub_carriers=df.columns,
                                                                  std_dev=std_dev,
                                                                  num_samples=df.shape[0])
     if response.lower() == "n":
