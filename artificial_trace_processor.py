@@ -14,10 +14,10 @@ def process_artificial_increments(real_increments, path, sub_carriers, std_dev, 
 
     if not os.path.exists(os.path.join(path, "increments_hist")):
         os.mkdir(os.path.join(path, "increments_hist"))
-    for title in sub_carriers:
-        histograms_plotter.plot_histogram_for_sc(title, new_data, num_samples, path)
-    time_evolution_plotter.plot_time_evolution_for_sc(new_data, path=path)
-    increments_plotter.plot_superimposed_increments(real_increments, new_data, path=path)
+    #for title in sub_carriers:
+    #    histograms_plotter.plot_histogram_for_sc(title, new_data, num_samples, path)
+    #time_evolution_plotter.plot_time_evolution_for_sc(new_data, path=path)
+    #increments_plotter.plot_superimposed_increments(real_increments, new_data, path=path)
     autocorrelation_plotter.plot_autocorrelation(new_data, path=path)
 
 

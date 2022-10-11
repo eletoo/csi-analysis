@@ -1,6 +1,7 @@
 import os
 from matplotlib import pyplot as pl
 from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.tsa.stattools import acf, acovf
 
 
 def plot_autocorrelation(df, path: str = ""):
@@ -19,11 +20,12 @@ def plot_autocorrelation(df, path: str = ""):
 
 def plot(df, title, tau_max, path):
     data = []
-    # df = df.diff().drop(labels=0, axis=0)  # uncomment this line to plot autocorrelation of increments
+    #df = df.diff().drop(labels=0, axis=0)  # uncomment this line to plot autocorrelation of increments
+    # plot_acf(df[title], lags=tau_max, use_vlines=False, title=title, alpha=None, marker='o')
     var = float(df[title].std()) ** 2
-    data.append(1)
-    for tau in range(1, tau_max + 1):
-        data.append(autocorrelation(df, title, tau_max, tau, var))
+    for tau in range(0, tau_max):
+        # data.append(autocorrelation(df, title, tau_max, tau, var))
+        data = autocorrelation(df, title, tau_max, tau, var)
     pl.plot(data)
     pl.xlabel('Tau')
     pl.ylabel('Auto-correlation')
@@ -31,7 +33,7 @@ def plot(df, title, tau_max, path):
     pl.rcParams.update(
         {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})
     pl.grid(visible=True)
-    # pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_graphs', 'figure' + str(title) + '.pdf')) #
+    #pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_graphs', 'figure' + str(title) + '.pdf')) #
     # uncomment this line to plot autocorrelation of increments
 
     pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + str(title) + '.pdf'))
@@ -49,4 +51,6 @@ def autocovariance(df, title, tau_max, tau):
 
 
 def autocorrelation(df, title, tau_max, tau, var):
-    return autocovariance(df, title, tau_max, tau) / var
+    # return autocovariance(df, title, tau_max, tau) / var
+    c = acovf(df[title], nlag=tau_max)
+    return c / c[0]
