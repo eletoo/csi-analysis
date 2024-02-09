@@ -22,7 +22,7 @@ def plot(df, title, tau_max, path):
     data = []
     #df = df.diff().drop(labels=0, axis=0)  # uncomment this line to plot autocorrelation of increments
     # plot_acf(df[title], lags=tau_max, use_vlines=False, title=title, alpha=None, marker='o')
-    var = float(df[title].std()) ** 2
+    var = float(df[title].STD()) ** 2
     for tau in range(0, tau_max):
         # data.append(autocorrelation(df, title, tau_max, tau, var))
         data = autocorrelation(df, title, tau_max, tau, var)

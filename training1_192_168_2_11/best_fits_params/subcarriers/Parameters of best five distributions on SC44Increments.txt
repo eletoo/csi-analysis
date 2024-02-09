@@ -1,5 +1,0 @@
-norm - (location:	11.05221651	scale:	64.50592294	)
-cauchy - (location:	5.63167204	scale:	33.88750405	)
-dgamma - (a:	1.11061795	location:	8.06747320	scale:	44.50892702	)
-powernorm - (c:	0.92881604	location:	6.79525609	scale:	63.09254173	)
-loggamma - (c:	934.89235249	location:	-13492.16465002	scale:	1974.20146274	)
