@@ -82,8 +82,8 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csv_file = 'capture0.csv'  # file containing the data to be processed
-    dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
+    csv_file = 'capture1.csv'  # file containing the data to be processed
+    dst_folder = 'capture1'  # folder path where to save the output of the code, can be an empty string
     BW = 40  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     #######################################
@@ -143,10 +143,10 @@ if __name__ == '__main__':
             if not os.path.exists(artificial_path):
                 os.mkdir(os.path.join(os.getcwd(), dst_folder, artificial_path))
 
-            if not os.path.exists(os.path.join(dst_folder, 'distributions_info.csv')):
+            if not os.path.exists(os.path.join(dst_folder, 'best_fits_info.csv')):
                 fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions,
                                              os.path.join(os.getcwd(), dst_folder))
-            file_name = "distributions_info.csv"
+            file_name = "best_fits_info.csv"
             data = pd.read_csv(os.path.join(dst_folder, file_name), header=None)
             std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
             artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path,
