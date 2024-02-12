@@ -6,24 +6,18 @@ from matplotlib import pyplot as pl
 
 
 def is_stationary(batch_mean, column_mean):
+    """
+    :param batch_mean: mean of the batch of data
+    :param column_mean: mean of the column
+    :return: true if the process (data) is stationary, false otherwise
+    """
+    # process is stationary if the mean of each portion of data (batch) is the same as mean of all the dataset (column)
+    # we consider the means to be the same if they lie within 10% of each other
     return abs(batch_mean - column_mean) < 0.1 * column_mean
 
 
-def process_batch(column_mean, batch, size):
-    sum = 0
-    for value in batch:
-        sum += abs(value)
-
-    batch_mean = sum / size
-    print(batch_mean)
-    if not is_stationary(batch_mean, column_mean):
-        print("Non stationary process")
-        return False
-    else:
-        return True
-
-
 def create_batches(data, length):
+    # create batches of data of size length
     return [data[i:i + length] for i in range(0, len(data), length)]
 
 
@@ -35,21 +29,23 @@ def plot_histogram_for_sc(title, df, size, path: str = ""):
 
     print(title)
     column_mean = float(col.mean())
-    print("Column mean:", column_mean)
-
-    # plottable = True
-    # for batch in create_batches(df, size):
-    #   if process_batch(column_mean, batch[title], size):
-    #      continue
-    #   plottable = False
-
-    # if plottable:
-    #   plot(c, column_mean, title)
-
-    # remove previous comments and instead comment the following three lines if the plot is only needed for
-    # stationary processes
+    # print("Column mean:", column_mean)
+    # print("Column std:", col.std())
+    # print("Column kurtosis:", col.kurtosis())
+    # print("Column skewness:", col.skew())
     for batch in create_batches(df, size):
-        process_batch(column_mean, batch[title], size)
+        s = 0
+        for value in batch[title]:
+            s += abs(value)
+
+        batch_mean = s / size
+        # print(batch_mean)
+        if not is_stationary(batch_mean, column_mean):
+            print(title + "Non stationary process")
+            stat = False
+        else:
+            stat = True
+    # use if statement to plot only stationary processes
     plot(col, column_mean, title, 'histograms', path)
 
 
@@ -59,7 +55,7 @@ def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str, pat
     pl.xlabel('Magnitude')
     pl.ylabel('Relative frequency')
     pl.title(title)
-    pl.xlim(-150, 150)
+    # pl.xlim(-500, 500)
     # pl.show()
     pl.rcParams.update(
         {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})
