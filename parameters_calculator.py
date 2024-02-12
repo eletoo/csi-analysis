@@ -1,3 +1,4 @@
+import math
 import os
 import matplotlib.pyplot as pl
 
@@ -40,7 +41,7 @@ def calculate_skewness(df, path):
         numerator = 0
         for data in df[title]:
             numerator += pow((data - df[title].mean()), 3)
-        skewness = numerator / pow(df[title].STD(), 3) / df[title].size
+        skewness = numerator / pow(math.sqrt(df[title].var()), 3) / df[title].size
         to_print.append("\n" + title + ":\t" + str(skewness))
 
     f = open(path, "w")
@@ -55,7 +56,7 @@ def calculate_kurtosis(df, path):
         numerator = 0
         for data in df[title]:
             numerator += pow((data - df[title].mean()), 4)
-        skewness = (numerator / pow(df[title].STD(), 4) / df[title].size) - 3
+        skewness = (numerator / pow(math.sqrt(df[title].var()), 4) / df[title].size) - 3
         to_print.append("\n" + title + ":\t" + str(skewness))
 
     f = open(path, "w")

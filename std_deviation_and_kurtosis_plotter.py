@@ -23,7 +23,7 @@ def plot_std_dev_and_kurtosis(df: pandas.DataFrame, path: str = ""):
         num = 0
         for data in df1[title]:
             num += pow((data - df1[title].mean()), 4)
-        kurtosis.append((num / pow(df1[title].STD(), 4) / df1[title].size) - 3)
+        kurtosis.append((num / pow(math.sqrt(df1[title].var()), 4) / df1[title].size) - 3)
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()

@@ -69,13 +69,13 @@ def fit_distributions_and_save_params(distributions, f, file):
 
 def find_best_dist(df, distributions, path):
     file = open(
-        os.path.join(path, 'normal_distribution_info.csv'), "w")
-    # os.path.join(path, 'Best-fitting_distributions'), "w")
+        # os.path.join(path, 'normal_distribution_info.csv'), "w")
+        os.path.join(path, 'best_fits_info.csv'), "w")
     for title in df:
         print("fitting increments " + title)
         f = Fitter(df[title] - df[title].mean(), xmin=-150, xmax=150, bins=100,
                    distributions=distributions.keys(),
                    timeout=30, density=True)
         f.fit()
-        file.write("{},{}\n".format(title, f.fitted_param["norm"]))
-        # file.write("{}:\t{}\n".format(title, f.get_best("sumsquare_error")))
+        # file.write("{},{}\n".format(title, f.fitted_param["norm"]))
+        file.write("{}:\t{}\n".format(title, f.get_best("sumsquare_error")))
