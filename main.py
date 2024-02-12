@@ -82,8 +82,8 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csv_file = 'capture1.csv'  # file containing the data to be processed
-    dst_folder = 'capture1'  # folder path where to save the output of the code, can be an empty string
+    csv_file = 'capture2.csv'  # file containing the data to be processed
+    dst_folder = 'capture2'  # folder path where to save the output of the code, can be an empty string
     BW = 40  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     #######################################
@@ -147,12 +147,12 @@ if __name__ == '__main__':
                 fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions,
                                              os.path.join(os.getcwd(), dst_folder))
             file_name = "best_fits_info.csv"
-            data = pd.read_csv(os.path.join(dst_folder, file_name), header=None)
-            std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
-            artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path,
-                                                                     sub_carriers=df.columns,
-                                                                     std_dev=std_dev,
-                                                                     num_samples=df.shape[0])
+            # data = pd.read_csv(os.path.join(dst_folder, file_name), header=None)
+            # std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
+            # artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path,
+            #                                                          sub_carriers=df.columns,
+            #                                                          std_dev=std_dev,
+            #                                                          num_samples=df.shape[0])
         elif choice == 11:
             batch_size = len(df)
             for x in reversed(range(1, len(df))):
@@ -174,16 +174,16 @@ if __name__ == '__main__':
             if not os.path.exists(artificial_path):
                 os.mkdir(os.path.join(os.getcwd(), dst_folder, artificial_path))
 
-            if not os.path.exists(os.path.join(dst_folder, 'distributions_info.csv')):
+            if not os.path.exists(os.path.join(dst_folder, 'best_fits_info.csv')):
                 fitting_by_sc.find_best_dist(df.diff().drop(labels=0, axis=0), distributions,
                                              os.path.join(os.getcwd(), dst_folder))
-            file_name = "distributions_info.csv"
-            data = pd.read_csv(os.path.join(dst_folder, file_name), header=None)
-            std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
-            artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path,
-                                                                     sub_carriers=df.columns,
-                                                                     std_dev=std_dev,
-                                                                     num_samples=df.shape[0])
+            file_name = "best_fits_info.csv"
+            # data = pd.read_csv(os.path.join(dst_folder, file_name), header=None)
+            # std_dev = pd.DataFrame(data.iloc[:, 2].map(lambda x: x.rstrip(')')).astype(float))
+            # artificial_trace_processor.process_artificial_increments(df.diff(), path=artificial_path,
+            #                                                          sub_carriers=df.columns,
+            #                                                          std_dev=std_dev,
+            #                                                          num_samples=df.shape[0])
 
     # if there is not the desired csv file to read, then plot merged data to create it
     if not os.path.exists(os.path.join(dst_folder, 'merged_plot',

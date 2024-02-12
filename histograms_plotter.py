@@ -27,7 +27,7 @@ def plot_histogram_for_sc(title, df, size, path: str = ""):
 
     col = df[title]
 
-    print(title)
+    # print(title)
     column_mean = float(col.mean())
     # print("Column mean:", column_mean)
     # print("Column std:", col.std())
