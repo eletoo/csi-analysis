@@ -41,11 +41,12 @@ def plot_histogram_for_sc(title, df, size, path: str = ""):
         batch_mean = s / size
         # print(batch_mean)
         if not is_stationary(batch_mean, column_mean):
-            print(title + "Non stationary process")
             stat = False
         else:
             stat = True
-    # use if statement to plot only stationary processes
+    if not stat:
+        print(title + "Non stationary process")
+        # use if statement to plot only stationary processes
     plot(col, column_mean, title, 'histograms', path)
 
 
