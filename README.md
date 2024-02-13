@@ -13,7 +13,7 @@ The setup of the _m_ parameter is automatic and depends on the value
 of the bandwidth of the studied channel set up by the user in
 [main.py](main.py) (see Section [Main Script](README.md#Main Script)).
 
-The [unnecessaryPlots](unnecessaryPlots80) file contains the names of the
+The [unnecessaryPlots](unnecessaryPlots80ax) file contains the names of the
 sub-carriers that do not need to be plotted because they
 are unused for modulation, therefore are not currently
 relevant to the purpose of this study.

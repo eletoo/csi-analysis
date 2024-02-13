@@ -82,9 +82,9 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csv_file = 'capture2.csv'  # file containing the data to be processed
-    dst_folder = 'capture2'  # folder path where to save the output of the code, can be an empty string
-    BW = 40  # channel bandwidth: 20, 40, 80 MHz
+    csv_file = 'processed4.csv'  # file containing the data to be processed
+    dst_folder = 'capture4'  # folder path where to save the output of the code, can be an empty string
+    BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     #######################################
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     colnames = ["SC" + str(i) for i in range(0, int(num_sc))]
     df = pd.read_csv(path, names=colnames, header=None)
 
-    with open(os.path.join(os.getcwd(), "unnecessaryPlots" + str(BW))) as f:
+    with open(os.path.join(os.getcwd(), "unnecessaryPlots" + str(BW) + STD)) as f:
         unnecessary_plots = f.read().splitlines()
 
     for title in df:
@@ -115,7 +115,7 @@ if __name__ == '__main__':
             pass
         if choice == 1:
             batch_size = len(df)
-            for x in reversed(range(1, len(df))): # create batches of size x (as long as possible)
+            for x in reversed(range(1, len(df))):  # create batches of size x (as long as possible)
                 if len(df) % x == 0:
                     batch_size = x
                     break
