@@ -14,7 +14,7 @@ def plot_time_evolution_for_sc(df, path: str = ""):
         pl.plot(df[title])
         pl.xlabel("Packet")
         pl.ylabel("Magnitude")
-        pl.ylim(0, 500000)
+        pl.ylim(0, 2)
         pl.grid()
         pl.title(title)
         pl.rcParams.update({'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large',

@@ -82,9 +82,9 @@ if __name__ == '__main__':
     import pandas as pd
 
     ########## INFORMATION SETUP ##########
-    csv_file = 'processed4.csv'  # file containing the data to be processed
-    dst_folder = 'capture4'  # folder path where to save the output of the code, can be an empty string
-    BW = 20  # channel bandwidth: 20, 40, 80 MHz
+    csv_file = 'capture0.csv'  # file containing the data to be processed
+    dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
+    BW = 40  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     #######################################
 
@@ -107,6 +107,13 @@ if __name__ == '__main__':
         else:
             # format complex numbers into readable values
             df[title] = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in df[title])
+
+    # for each row, compute the mean and divide each value by the mean
+    for index, row in df.iterrows():
+        # each row is a time sample over the sub-carriers (frequencies)
+        # compute the mean amplitude over the frequencies and normalize the values by it (i.e. by the energy of the CSI)
+        mean = row.mean()
+        df.iloc[index] = row / mean
 
     choice = -1
     while choice != 0:
