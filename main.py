@@ -39,7 +39,7 @@ if __name__ == '__main__':
     colnames = ["SC" + str(i) for i in range(0, int(num_sc))]
     df = pd.read_csv(path, names=colnames, header=None)
 
-    with open(os.path.join(os.getcwd(), "unnecessaryPlots" + str(BW) + STD)) as f:
+    with open(os.path.join(os.getcwd(), "dontPlot/unnecessaryPlots" + str(BW) + STD)) as f:
         unnecessary_plots = f.read().splitlines()
 
     for title in df:
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             # format complex numbers into readable values
             df[title] = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in df[title])
 
-    # for each row, compute the mean and divide each value by the mean
+    # removing impact of AGC on data
     for index, row in df.iterrows():
         # each row is a time sample over the sub-carriers (frequencies)
         # compute the mean amplitude over the frequencies and normalize the values by it (i.e. by the energy of the CSI)
