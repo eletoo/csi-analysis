@@ -8,11 +8,11 @@ def plot_autocorrelation(df, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    if not os.path.exists(os.path.join(path, "auto-correlation_graphs")):
-        os.mkdir(os.path.join(path, "auto-correlation_graphs"))
+    # if not os.path.exists(os.path.join(path, "auto-correlation_graphs")):
+    #     os.mkdir(os.path.join(path, "auto-correlation_graphs"))
 
-    if not os.path.exists(os.path.join(path, "auto-correlation_through_formulae")):
-        os.mkdir(os.path.join(path, "auto-correlation_through_formulae"))
+    if not os.path.exists(os.path.join(path, "autocorrelation")):
+        os.mkdir(os.path.join(path, "autocorrelation"))
 
     for title in df:
         plot(df, title, 200, path)
@@ -36,7 +36,7 @@ def plot(df, title, tau_max, path):
     #pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_graphs', 'figure' + str(title) + '.pdf')) #
     # uncomment this line to plot autocorrelation of increments
 
-    pl.savefig(os.path.join(os.getcwd(), path, 'auto-correlation_through_formulae', 'figure' + str(title) + '.pdf'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'autocorrelation', 'figure' + str(title) + '.pdf'))
     print("Plotting figure " + str(title))
     pl.close()
 
