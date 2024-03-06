@@ -13,7 +13,7 @@ def plot_time_evolution_for_sc(df, path: str = ""):
     for title in df:
         pl.plot(df[title])
         pl.xlabel("Packet")
-        pl.ylabel("Magnitude")
+        pl.ylabel("Amplitude")
         pl.ylim(0, 2)
         pl.grid()
         pl.title(title)
