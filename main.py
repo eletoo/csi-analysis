@@ -1,5 +1,6 @@
 import os
 
+import mutual_info
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
 from time_evolution import plot_time_evolution_for_sc
@@ -17,6 +18,7 @@ def print_menu():
     print("2. Plot evolution in time")
     print("3. Plot increment/frequency histogram")
     print("4. Plot auto-correlation function")
+    print("5. Compute mutual information")
     print("-------------------------")
     return input("Choose an action: ")
 
@@ -28,7 +30,8 @@ if __name__ == '__main__':
     dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
     BW = 40  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
-    unneeded_dir = 'dontPlot/unnecessaryPlots' + str(BW) + STD  # folder containing the list of sub-carriers to be ignored
+    unneeded_dir = 'dontPlot/unnecessaryPlots' + str(
+        BW) + STD  # folder containing the list of sub-carriers to be ignored
     #######################################
 
     path = os.path.join(os.getcwd(), csv_file)
@@ -76,3 +79,5 @@ if __name__ == '__main__':
             plot_increments_for_sc(df, path=dst_folder)
         elif choice == 4:
             autocorrelation.plot_autocorrelation(df, path=dst_folder)
+        elif choice == 5:
+            mutual_info.save_mutual_info(df, path=dst_folder)
