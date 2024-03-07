@@ -28,6 +28,7 @@ if __name__ == '__main__':
     dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
     BW = 40  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
+    unneeded_dir = 'dontPlot/unnecessaryPlots' + str(BW) + STD  # folder containing the list of sub-carriers to be ignored
     #######################################
 
     path = os.path.join(os.getcwd(), csv_file)
@@ -39,11 +40,11 @@ if __name__ == '__main__':
     colnames = ["SC" + str(i) for i in range(0, int(num_sc))]
     df = pd.read_csv(path, names=colnames, header=None)
 
-    with open(os.path.join(os.getcwd(), "dontPlot/unnecessaryPlots" + str(BW) + STD)) as f:
-        unnecessary_plots = f.read().splitlines()
+    with open(os.path.join(os.getcwd(), unneeded_dir)) as f:
+        unneeded = f.read().splitlines()
 
     for title in df:
-        if title in unnecessary_plots:
+        if title in unneeded:
             del df[title]
         else:
             # format complex numbers into readable values
