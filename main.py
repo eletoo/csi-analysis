@@ -4,7 +4,7 @@ import mutual_info
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
 from time_evolution import plot_time_evolution_for_sc
-import autocorrelation
+import correlation
 import pandas as pd
 
 
@@ -18,7 +18,8 @@ def print_menu():
     print("2. Plot evolution in time")
     print("3. Plot increment/frequency histogram")
     print("4. Plot auto-correlation function")
-    print("5. Compute mutual information")
+    print("5. Plot inter-SC correlation")
+    print("6. Compute mutual information")
     print("-------------------------")
     return input("Choose an action: ")
 
@@ -78,6 +79,11 @@ if __name__ == '__main__':
         elif choice == 3:
             plot_increments_for_sc(df, path=dst_folder)
         elif choice == 4:
-            autocorrelation.plot_autocorrelation(df, path=dst_folder)
+            correlation.save_autocorrelation(df, path=dst_folder)
         elif choice == 5:
+            correlation.save_intercorr(df, path=dst_folder,
+                                       mode=0)  # plot correlation of increments across adjacent subcarriers
+            correlation.save_intercorr(df, path=dst_folder,
+                                       mode=1)  # plot correlation of amplitude across subcarriers
+        elif choice == 6:
             mutual_info.save_mutual_info(df, path=dst_folder)
