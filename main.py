@@ -1,5 +1,6 @@
 import os
 
+import mi
 import mutual_info
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
     csv_file = 'capture0.csv'  # file containing the data to be processed
     dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
-    BW = 40  # channel bandwidth: 20, 40, 80 MHz
+    BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     unneeded_dir = 'dontPlot/unnecessaryPlots' + str(
         BW) + STD  # folder containing the list of sub-carriers to be ignored
@@ -87,3 +88,5 @@ if __name__ == '__main__':
                                        mode=1)  # plot correlation of amplitude across subcarriers
         elif choice == 6:
             mutual_info.save_mutual_info(df, path=dst_folder)
+
+        mi.mi(df, path=dst_folder)
