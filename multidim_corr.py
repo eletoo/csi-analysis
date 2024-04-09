@@ -51,7 +51,7 @@ def save_multidimensional_corr(df, path: str = ""):
                  'ytick.labelsize': 'large'})
             pl.grid(visible=True)
             pl.legend()
-            if not os.path.exists(os.path.join(path, df.columns[j])):
-                os.mkdir(os.path.join(path, df.columns[j]))
-            pl.savefig(os.path.join(os.getcwd(), path, df.columns[j], 'CSI' + str(i) + "_" + df.columns[j] + '.pdf'))
+            if not os.path.exists(os.path.join(path, "CSI" + str(i))):
+                os.mkdir(os.path.join(path, "CSI" + str(i)))
+            pl.savefig(os.path.join(os.getcwd(), path, "CSI" + str(i), 'CSI' + str(i) + "_" + df.columns[j] + '.pdf'))
             pl.close()
