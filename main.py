@@ -1,6 +1,7 @@
 import os
 
 import mi
+import multidim_corr
 import mutual_info
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
@@ -19,7 +20,8 @@ def print_menu():
     print("2. Plot evolution in time")
     print("3. Plot increment/frequency histogram")
     print("4. Plot auto-correlation function")
-    print("5. Plot inter-SC correlation")
+    # print("5. Plot inter-SC correlation")
+    print("5. Plot multidimensional correlation")
     print("6. Compute mutual information")
     print("-------------------------")
     return input("Choose an action: ")
@@ -62,6 +64,8 @@ if __name__ == '__main__':
         mean = row.mean()
         df.iloc[index] = row / mean
 
+    df = mi.mi(df, path=dst_folder)  # normalize data between 0 and 1 and quantize over 255 levels
+
     choice = -1
     while choice != 0:
         choice = int(print_menu())
@@ -82,11 +86,10 @@ if __name__ == '__main__':
         elif choice == 4:
             correlation.save_autocorrelation(df, path=dst_folder)
         elif choice == 5:
-            correlation.save_intercorr(df, path=dst_folder,
-                                       mode=0)  # plot correlation of increments across adjacent subcarriers
-            correlation.save_intercorr(df, path=dst_folder,
-                                       mode=1)  # plot correlation of amplitude across subcarriers
+            # correlation.save_intercorr(df, path=dst_folder,
+            #                            mode=0)  # plot correlation of increments across adjacent subcarriers
+            # correlation.save_intercorr(df, path=dst_folder,
+            #                            mode=1)  # plot correlation of amplitude across subcarriers
+            multidim_corr.save_multidimensional_corr(df, path=dst_folder)
         elif choice == 6:
             mutual_info.save_mutual_info(df, path=dst_folder)
-
-        mi.mi(df, path=dst_folder)

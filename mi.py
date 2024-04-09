@@ -38,4 +38,4 @@ def mi(df, path=""):
         mu, sigma = norm.fit(increments)
         f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
 
-    df = (df * 255).astype(int)  # quantize over 256 levels (0 to 255)
+    return (df * 255).astype(int)  # quantize over 256 levels (0 to 255)
