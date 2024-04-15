@@ -4,3 +4,4 @@ fitter~=1.4.0
 matplotlib~=3.5.2
 statsmodels~=0.13.2
 numpy~=1.23.1
+tqdm~=4.66.2
