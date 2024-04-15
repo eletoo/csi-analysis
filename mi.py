@@ -1,7 +1,7 @@
 import os
-
-from matplotlib import pyplot as pl
+import numpy as np
 from scipy.stats import norm
+from tqdm import tqdm
 
 
 def mi(df, path=""):
@@ -11,31 +11,34 @@ def mi(df, path=""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
-    # if not os.path.exists(os.path.join(path, "normalized_incr")):
-    #     os.mkdir(os.path.join(path, "normalized_incr"))
-    # for each column of df, save the histogram of the values as a .pdf file
-    # for title in df:
-    #     df[title].diff().hist(bins=100)
-    #     pl.xlabel('Normalized Increment')
-    #     pl.ylabel('Frequency')
-    #     pl.title(title)
-    #     pl.rcParams.update({'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large',
-    #                         'ytick.labelsize': 'large'})
-    #     pl.savefig(os.path.join(os.getcwd(), path, 'normalized_incr', 'figure' + str(title) + '.pdf'))
-    #     # print("Plotting histogram " + str(title))
-    #     pl.close()
+    rows, cols = df.shape
+    increments = np.nan * np.ones((int(rows * (rows - 1) / 2), cols))
 
-    # create an array with all increments
-    increments = []
-    for title in df:
-        increments.extend(df[title].diff().drop(labels=0, axis=0))
+    # compute increments between CSI at time t and CSI at time t + delta_t (for each t and for each delta_t)
+    cur_row = 0
+    for i in tqdm(range(rows), total=rows):
+        row = df.iloc[i, :]
+        for j in range(i + 1, rows):
+            diff = (row - df.iloc[j, :]).values
+            increments[cur_row, :] = diff
+            cur_row += 1
 
     # fit normal distribution to the data to compute mean and sigma of the distribution of the increments
-    # on each column of df
     with open(os.path.join(path, "mu_sigma.txt"), "w") as f:
-        # for title in df:
-        # mu, sigma = norm.fit(df[title].diff().drop(labels=0, axis=0))  # fit a normal distribution to the increments
         mu, sigma = norm.fit(increments)
         f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
+
+    # for each delta_t compute increments between CSI at time t and CSI at time t + delta_t (for each t)
+    # fit normal distribution to the data to compute mean and sigma of the distribution of the increments
+    with open(os.path.join(path, "mu_sigma_delta_t.txt"), "w") as f:
+        for delta in tqdm(range(1, rows), total=rows - 1):
+            diffs = []
+            for row in range(1, rows):
+                if row + delta >= rows:
+                    break
+                diffs.extend(df.iloc[row, :] - df.iloc[row + delta, :])
+            mu, sigma = norm.fit(diffs)
+            f.write("DELTA_T: " + str(delta) + "\tMU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
+    f.close()
 
     return (df * 255).astype(int)  # quantize over 256 levels (0 to 255)

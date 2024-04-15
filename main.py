@@ -1,3 +1,4 @@
+import math
 import os
 
 import mi
@@ -30,7 +31,7 @@ def print_menu():
 if __name__ == '__main__':
 
     ########## INFORMATION SETUP ##########
-    csv_file = 'capture0.csv'  # file containing the data to be processed
+    csv_file = '20ax/capture0.csv'  # file containing the data to be processed
     dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -92,4 +93,5 @@ if __name__ == '__main__':
             #                            mode=1)  # plot correlation of amplitude across subcarriers
             multidim_corr.save_multidimensional_corr(df, path=dst_folder)
         elif choice == 6:
-            mutual_info.save_mutual_info(df, path=dst_folder)
+            pass
+            # mutual_info.save_mutual_info(df, path=dst_folder)
