@@ -42,4 +42,17 @@ def mi(df, path=""):
             f.write("DELTA_T: " + str(delta) + "\tMU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
     f.close()
 
+    # for each delta_t compute increments between CSI at time t and CSI at time t + delta_t (for each t)
+    # fit normal distribution to the data to compute mean and sigma of the distribution of the increments
+    with open(os.path.join(path, "mu_sigma_delta_t.txt"), "w") as f:
+        for delta in tqdm(range(1, rows), total=rows - 1):
+            diffs = []
+            for row in range(1, rows):
+                if row + delta >= rows:
+                    break
+                diffs.extend(df.iloc[row, :] - df.iloc[row + delta, :])
+            mu, sigma = norm.fit(diffs)
+            f.write("DELTA_T: " + str(delta) + "\tMU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
+    f.close()
+
     return (df * 255).astype(int)  # quantize over 256 levels (0 to 255)
