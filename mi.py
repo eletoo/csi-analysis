@@ -4,6 +4,8 @@ import numpy as np
 from scipy.stats import norm
 from tqdm import tqdm
 
+MEAN_CSI_CSV = "mean_CSI.csv"
+
 MU_SIGMA_TXT = "mu_sigma.txt"
 
 
@@ -44,7 +46,24 @@ def mi(df, path=""):
     #     f.write("DELTA_T: " + str(delta) + "\tMU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
     # f.close()
 
+    save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
+
     return quantize(df, num_intervals=255)  # quantize over 256 levels (0 to 255)
+
+
+def save_mean_csi(df, path):
+    """Save mean CSI values to a CSV file.
+    :param df: dataframe to compute the mean CSI on
+    :param path: path to save the CSV file
+    """
+    if not path.endswith(".csv"):  # fix file extension
+        path = path[:path.rfind(".")]
+        path += ".csv"
+    with open(path, "w") as mcsi:
+        for col in df.columns:
+            mcsi.write(str(df[col].mean()) + ",")
+        mcsi.truncate(mcsi.tell() - 1)  # remove last comma
+    mcsi.close()
 
 
 def normalize(df):
