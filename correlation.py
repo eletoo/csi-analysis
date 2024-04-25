@@ -1,4 +1,5 @@
 import os
+
 from matplotlib import pyplot as pl
 from statsmodels.tsa.stattools import acovf
 

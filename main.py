@@ -1,14 +1,12 @@
-import math
 import os
 
+import pandas as pd
+import correlation
 import mi
 import multidim_corr
-import mutual_info
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
 from time_evolution import plot_time_evolution_for_sc
-import correlation
-import pandas as pd
 
 
 def print_menu():
