@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import pandas as pd
 from scipy.stats import norm
 from tqdm import tqdm
 
@@ -10,10 +11,10 @@ MU_SIGMA_TXT = "mu_sigma.txt"
 
 
 def mi(df, path=""):
-    df = normalize(df)
-
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
+
+    df = normalize(df)
 
     rows, cols = df.shape
     increments = np.nan * np.ones((int(rows * (rows - 1) / 2), cols))
@@ -27,11 +28,21 @@ def mi(df, path=""):
             increments[cur_row, :] = diff
             cur_row += 1
 
+    # increments = df.diff().dropna()  # DEBUG - compute increments between CSI at time t and CSI at time t + 1
+
+    df_quant = quantize(df, 0, 255)
+
+    df_incr = pd.DataFrame()
+    df_incr = increments
+    incr = round(df_incr * 255)
+
     # fit normal distribution to increments to compute mean and sigma of the distribution
     with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
         mu, sigma = norm.fit(increments)
         f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
-    f.close()
+
+        mu, sigma = norm.fit(incr)
+        f.write("MU_quant: " + str(mu) + "\tSIGMA_quant: " + str(sigma) + "\n")
 
     # for each delta_t compute increments between CSI at time t and CSI at time t + delta_t (for each t)
     # fit normal distribution to the data to compute mean and sigma of the distribution of the increments
@@ -47,8 +58,8 @@ def mi(df, path=""):
     # f.close()
 
     save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
-
-    return quantize(df, num_intervals=255)  # quantize over 256 levels (0 to 255)
+    # df_quant = quantize(df, 0, 255).diff().dropna()
+    return quantize(df, a=0, b=255)  # quantize over 256 levels (0 to 255)
 
 
 def save_mean_csi(df, path):
@@ -76,10 +87,11 @@ def normalize(df):
     return df
 
 
-def quantize(df, num_intervals):
-    """Quantize data into num_intervals levels.
+def quantize(df, a=0, b=255):
+    """Quantize data into an integer number of levels ranging from a to b.
     :param df: dataframe to quantize
-    :param num_intervals: number of intervals
+    :param a: lower bound of the quantization interval
+    :param b: upper bound of the quantization interval
     :return: quantized dataframe
     """
-    return (df * num_intervals).astype(int)
+    return round(df * (b - a) + a)
