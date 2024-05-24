@@ -63,7 +63,7 @@ if __name__ == '__main__':
         mean = row.mean()
         df.iloc[index] = row / mean
 
-    df = mi.mi(df, path=dst_folder)  # normalize data between 0 and 1 and quantize over 255 levels
+    df_quant, incr_quant = mi.mi(df, path=dst_folder)  # normalize data between 0 and 1 and quantize over 255 levels
 
     choice = -1
     while choice != 0:
