@@ -7,7 +7,7 @@ from scipy.stats import norm
 MEAN_CSI_CSV = "mean_CSI.csv"
 
 MU_SIGMA_TXT = "mu_sigma.txt"
-QB = 3  # 3, 4, 5
+QB = 4  # qb = 3, 4, 5 to have support over 7, 15, 31 levels
 
 
 def mi(df, qb=QB, path=""):
@@ -16,9 +16,9 @@ def mi(df, qb=QB, path=""):
 
     df = normalize(df)
 
-    rows, cols = df.shape
+    # rows, cols = df.shape
     # increments = np.nan * np.ones((int(rows * (rows - 1) / 2), cols))
-    #
+
     # # compute increments between CSI at time t and CSI at time t + delta_t (for each t and for each delta_t)
     # cur_row = 0
     # for i in tqdm(range(rows), total=rows):
@@ -30,60 +30,50 @@ def mi(df, qb=QB, path=""):
 
     increments = df.diff().dropna()  # DEBUG - compute increments between CSI at time t and CSI at time t + 1
 
-    df_quant = quantize(df, -2 ** (qb - 1), 2 ** (qb - 1))  # quantize data over 2^qb levels
-    bin_incr = quantize_norm(increments, qb, path)  # quantize increments over 2^qb levels
+    df_quant = quantize(df, 0, 2 ** (2 * qb) - 1)  # quantize data over 2^qb levels
+
+    mu, sigma = norm.fit(increments)
+    bin_incr = quantize_norm(increments, mu, sigma, qb, path)  # quantize increments over 2^qb levels
 
     # fit normal distribution to increments to compute mean and sigma of the distribution
     with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
-        mu, sigma = norm.fit(increments)
         f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
 
     save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
     return df_quant, bin_incr
 
 
-def quantize_norm(increments, qb, path=''):  # qb = 3, 4, 5 to have support over 8, 16, 32 levels
-    mu, sigma = norm.fit(increments)
+def quantize_norm(increments, mu, sigma, qb, path=''):
     dstar = 3 * sigma
 
-    # sample = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(norm.rvs(loc=mu, scale=sigma,
-    #                   size=increments.size))  # generate sample from normal distribution with correct mu and sigma
-    sample = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(increments.values.flatten())
+    sample = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(
+        np.random.normal(loc=mu, scale=sigma, size=increments.size))
+    # sample2 = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(increments.values.flatten())
 
     snew = (sample - min(sample)) / (max(sample) - min(sample)) * (2 ** qb - 2) - (2 ** (qb - 1) - 1)
-    zeros = []
-    for i in range(len(snew)):
-        if - 1e-5 < snew[i] < 0:
-            zeros.append(i)
+    # snew2 = (sample2 - min(sample2)) / (max(sample2) - min(sample2)) * (2 ** qb - 2) - (2 ** (qb - 1) - 1)
+
     qsamples = [int(round(i)) for i in snew]
+    # qsamples2 = [int(round(i)) for i in snew2]
 
     # make sure that the distribution integrates to 1
     occ = [qsamples.count(i) / len(qsamples) for i in range(-2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1)]
     print(sum(occ))
 
     y, x = np.histogram(qsamples, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
-    # y = y / max(y)
-    plt.bar(x[:-1], y, align='center')
+    y = y / max(y)  # normalize histogram
+    # y2, x = np.histogram(qsamples2, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
+    # y2 = y2 / max(y2)  # normalize histogram
+    plt.bar(x[:-1], y, align='center', label='Sample')
+    # plt.bar(x[:-1], y2, align='center', label=str(qb) + ' bits', width=0.5)
     plt.gca().set_xticks(x[:-1])
-    # plt.show()
+    plt.yscale('log')
+    plt.legend()
     plt.grid()
-    plt.savefig(os.path.join(path, "quant_increments_" + str(qb) + ".pdf"))
+    # plt.show()
+    plt.savefig(os.path.join(path, "quant_sample_" + str(qb) + ".pdf"))
 
-    binincr = []
-    for i in range(len(qsamples)):
-        # turn into 1+7 bits representation
-        if qsamples[i] < 0 or i in zeros:
-            binnum = ''.join(bin(qsamples[i])[3:])
-            while len(binnum) < 7:
-                binnum = '0' + binnum
-            binnum = '1' + binnum
-        else:
-            binnum = ''.join(bin(qsamples[i])[2:])
-            while len(binnum) < 8:
-                binnum = '0' + binnum
-        binincr.append(binnum)
-
-    return binincr
+    return qsamples
 
 
 def save_mean_csi(df, path):
