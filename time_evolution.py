@@ -3,7 +3,7 @@ import os
 from matplotlib import pyplot as pl
 
 
-def plot_time_evolution_for_sc(df, path: str = ""):
+def plot_time_evolution_for_sc(df, df_quant, path: str = ""):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
@@ -11,10 +11,16 @@ def plot_time_evolution_for_sc(df, path: str = ""):
         os.mkdir(os.path.join(path, "time_evolution"))
 
     for title in df:
-        pl.plot(df[title])
+        fig, ax1 = pl.subplots()
+        ax2 = ax1.twinx()
+        ax1.plot(df[title], label="Original", color='r')
+        ax2.plot(df_quant[title], label="Quantized", color='b')
         pl.xlabel("Packet")
         pl.ylabel("Amplitude")
-        pl.ylim(0, 2)
+        ax1.legend(loc='upper left')
+        ax2.legend(loc='upper right')
+        ax1.set_ylim([0, df.max().max() * 1.1])
+        ax2.set_ylim([0, df_quant.max().max() * 1.1])
         pl.grid()
         pl.title(title)
         pl.rcParams.update({'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large',

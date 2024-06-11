@@ -1,6 +1,7 @@
 import os
 
 import pandas as pd
+
 import correlation
 import mi
 import multidim_corr
@@ -79,7 +80,8 @@ if __name__ == '__main__':
             for title in df:
                 plot_histogram_for_sc(title, df, batch_size, path=dst_folder)
         elif choice == 2:
-            plot_time_evolution_for_sc(df, path=dst_folder)
+            # plot_time_evolution_for_sc(df, path=dst_folder)
+            plot_time_evolution_for_sc(df, df_quant, path=os.path.join(dst_folder, "quantized"))
         elif choice == 3:
             plot_increments_for_sc(df, path=dst_folder)
         elif choice == 4:
