@@ -1,3 +1,4 @@
+import math
 import os
 
 import matplotlib.pyplot as plt
@@ -29,18 +30,21 @@ def mi(df, qb=QB, path=""):
     #         cur_row += 1
 
     increments = df.diff().dropna()  # DEBUG - compute increments between CSI at time t and CSI at time t + 1
-
-    df_quant = quantize(df, 0, 2 ** (2 * qb) - 1)  # quantize data over 2^qb levels
-
     mu, sigma = norm.fit(increments)
-    bin_incr = quantize_norm(increments, mu, sigma, qb, path)  # quantize increments over 2^qb levels
+
+    q_inc = qb
+    dstar = 3 * sigma
+    q_amp = math.ceil(math.log2(1 / dstar * (2 ** q_inc + 1)))  # quantize amplitudes over 2^q_amp levels
+
+    df_quant = quantize(df, 0, 2 ** q_amp - 1)  # quantize data over 2^qb levels
+    incr_quant = quantize_norm(increments, mu, sigma, qb, path)  # quantize increments over 2^qb levels
 
     # fit normal distribution to increments to compute mean and sigma of the distribution
     with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
         f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
 
     save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
-    return df_quant, bin_incr
+    return df_quant, incr_quant, q_inc, q_amp
 
 
 def quantize_norm(increments, mu, sigma, qb, path=''):
@@ -96,8 +100,11 @@ def normalize(df):
     :param df: dataframe to normalize
     :return: normalized dataframe
     """
-    df = df - df.min().min()  # shift data so that it ranges from 0 to max
-    df = df / (df.max().max())  # normalize data so that it ranges from 0 to 1
+    for index, row in df.iterrows():  # each row is normalized wrt its max value
+        df.iloc[index] = df.iloc[index] - df.iloc[index].min()
+        df.iloc[index] = df.iloc[index] / df.iloc[index].max()
+    # df = df - df.min().min()  # shift data so that it ranges from 0 to max
+    # df = df / (df.max().max())  # normalize data so that it ranges from 0 to 1
     return df
 
 
