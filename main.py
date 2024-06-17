@@ -7,6 +7,7 @@ import mi
 import multidim_corr
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
+from plotcsi import plotcsi, plotcsi_quant
 from time_evolution import plot_time_evolution_for_sc
 
 
@@ -64,7 +65,9 @@ if __name__ == '__main__':
         mean = row.mean()
         df.iloc[index] = row / mean
 
-    df_quant, incr_quant = mi.mi(df, path=dst_folder)  # normalize data between 0 and 1 and quantize over 255 levels
+    # plotcsi(df, 10)  # plot 10 random csi
+    df_quant, incr_quant, q_inc, q_amp = mi.mi(df, path=dst_folder)  # normalize data and quantize
+    plotcsi_quant(df, df_quant, q_amp=q_amp, n=10, path=dst_folder)  # plot 10 random csi and their quantized version
 
     choice = -1
     while choice != 0:
@@ -79,6 +82,7 @@ if __name__ == '__main__':
                     break
             for title in df:
                 plot_histogram_for_sc(title, df, batch_size, path=dst_folder)
+                # plot_histogram_for_sc(title, df_quant, batch_size, path=os.path.join(dst_folder, "quantized"))
         elif choice == 2:
             # plot_time_evolution_for_sc(df, path=dst_folder)
             plot_time_evolution_for_sc(df, df_quant, path=os.path.join(dst_folder, "quantized"))
