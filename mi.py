@@ -37,7 +37,7 @@ def mi(df, qb=QB, path=""):
     q_amp = math.ceil(math.log2(1 / dstar * (2 ** q_inc + 1)))  # quantize amplitudes over 2^q_amp levels
 
     df_quant = quantize(df, 0, 2 ** q_amp - 1)  # quantize data over 2^qb levels
-    incr_quant = quantize_norm(increments, mu, sigma, qb, path)  # quantize increments over 2^qb levels
+    incr_quant = quantize_norm(increments, sigma, qb, mu=0, path=path)  # quantize increments over 2^qb levels
 
     # fit normal distribution to increments to compute mean and sigma of the distribution
     with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
@@ -47,7 +47,7 @@ def mi(df, qb=QB, path=""):
     return df_quant, incr_quant, q_inc, q_amp
 
 
-def quantize_norm(increments, mu, sigma, qb, path=''):
+def quantize_norm(increments, sigma, qb, mu=0, path=''):
     dstar = 3 * sigma
 
     sample = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(
