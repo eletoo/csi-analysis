@@ -100,11 +100,8 @@ def normalize(df):
     :param df: dataframe to normalize
     :return: normalized dataframe
     """
-    for index, row in df.iterrows():  # each row is normalized wrt its max value
-        df.iloc[index] = df.iloc[index] - df.iloc[index].min()
-        df.iloc[index] = df.iloc[index] / df.iloc[index].max()
-    # df = df - df.min().min()  # shift data so that it ranges from 0 to max
-    # df = df / (df.max().max())  # normalize data so that it ranges from 0 to 1
+    df = df - df.min().min()  # shift data so that it ranges from 0 to max
+    df = df / (df.max().max())  # normalize data so that it ranges from 0 to 1
     return df
 
 
