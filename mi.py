@@ -52,32 +52,54 @@ def quantize_norm(increments, sigma, qb, mu=0, path=''):
 
     sample = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(
         np.random.normal(loc=mu, scale=sigma, size=increments.size))
-    # sample2 = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(increments.values.flatten())
+    sample2 = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(increments.values.flatten())
 
     snew = (sample - min(sample)) / (max(sample) - min(sample)) * (2 ** qb - 2) - (2 ** (qb - 1) - 1)
-    # snew2 = (sample2 - min(sample2)) / (max(sample2) - min(sample2)) * (2 ** qb - 2) - (2 ** (qb - 1) - 1)
+    snew2 = (sample2 - min(sample2)) / (max(sample2) - min(sample2)) * (2 ** qb - 2) - (2 ** (qb - 1) - 1)
 
     qsamples = [int(round(i)) for i in snew]
-    # qsamples2 = [int(round(i)) for i in snew2]
+    qsamples2 = [int(round(i)) for i in snew2]
 
     # make sure that the distribution integrates to 1
     occ = [qsamples.count(i) / len(qsamples) for i in range(-2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1)]
     print(sum(occ))
 
+    hist_dist_compared(path, qb, qsamples, qsamples2)
+    plot_dist_compared(path, qb, qsamples, qsamples2)
+
+    return qsamples
+
+
+def hist_dist_compared(path, qb, qsamples, qsamples2):
     y, x = np.histogram(qsamples, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
-    y = y / max(y)  # normalize histogram
-    # y2, x = np.histogram(qsamples2, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
-    # y2 = y2 / max(y2)  # normalize histogram
+    y = y / sum(y)  # normalize histogram
+    y2, x = np.histogram(qsamples2, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
+    y2 = y2 / sum(y2)  # normalize histogram
     plt.bar(x[:-1], y, align='center', label='Sample')
-    # plt.bar(x[:-1], y2, align='center', label=str(qb) + ' bits', width=0.5)
+    plt.bar(x[:-1], y2, align='center', label=str(qb) + ' bits', width=0.5)
     plt.gca().set_xticks(x[:-1])
     plt.yscale('log')
     plt.legend()
     plt.grid()
     # plt.show()
-    plt.savefig(os.path.join(path, "quant_sample_" + str(qb) + ".pdf"))
+    plt.savefig(os.path.join(path, "hist_quant_incr_VS_sample_" + str(qb) + ".pdf"))
+    plt.close()
 
-    return qsamples
+
+def plot_dist_compared(path, qb, qsamples, qsamples2):
+    y, x = np.histogram(qsamples, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
+    y = y / sum(y)  # normalize histogram
+    y2, x = np.histogram(qsamples2, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
+    y2 = y2 / sum(y2)  # normalize histogram
+    plt.plot(x[:-1], y, label='Sample')
+    plt.plot(x[:-1], y2, label=str(qb) + ' bits')
+    plt.gca().set_xticks(x[:-1])
+    plt.yscale('log')
+    plt.legend()
+    plt.grid()
+    # plt.show()
+    plt.savefig(os.path.join(path, "plot_quant_incr_VS_sample_" + str(qb) + ".pdf"))
+    plt.close()
 
 
 def save_mean_csi(df, path):
