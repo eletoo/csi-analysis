@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import xticks
 
-import mi
+import quant
 
 
 def plotcsi(df, n=1, title='CSI Amplitude', xlabel='Subcarrier index', ylabel='Amplitude'):
@@ -18,8 +18,9 @@ def plotcsi(df, n=1, title='CSI Amplitude', xlabel='Subcarrier index', ylabel='A
     xticks(np.arange(0, len(df.columns), 20), fontsize=6)
     plt.ylabel(ylabel)
     plt.grid()
-    plt.show()
-
+    # plt.show()
+    plt.savefig('csi.pdf')
+    plt.close()
 
 def plotcsi_quant(df, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Subcarrier index ($n$)', ylabel=r'$A_c$',
                   path=''):
@@ -27,9 +28,9 @@ def plotcsi_quant(df, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Su
     a = 0
     b = 2 ** q_amp - 1
     dequant = (df_quant - a) * (b - a)
-    dequant = mi.normalize(dequant)
+    dequant = quant.normalize(dequant)
 
-    dfnorm = mi.normalize(df)
+    dfnorm = quant.normalize(df)
 
     # plt.figure()
     fig, ax = plt.subplots(3, 1, sharex=True)
