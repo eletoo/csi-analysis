@@ -5,9 +5,10 @@ import pandas as pd
 import correlation
 import mi
 import multidim_corr
+import quant
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
-from plotcsi import plotcsi, plotcsi_quant
+from plotcsi import plotcsi_quant, plotcsi
 from time_evolution import plot_time_evolution_for_sc
 
 
@@ -31,8 +32,8 @@ def print_menu():
 if __name__ == '__main__':
 
     ########## INFORMATION SETUP ##########
-    csv_file = '20ax/capture0.csv'  # file containing the data to be processed
-    dst_folder = 'capture0'  # folder path where to save the output of the code, can be an empty string
+    csv_file = 'emptyroom/20ax/capture0.csv'  # file containing the data to be processed
+    dst_folder = 'emptyroom/capture0'  # folder path where to save the output of the code, can be an empty string
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     unneeded_dir = 'dontPlot/unnecessaryPlots' + str(
@@ -66,8 +67,14 @@ if __name__ == '__main__':
         df.iloc[index] = row / mean
 
     # plotcsi(df, 10)  # plot 10 random csi
-    df_quant, incr_quant, q_inc, q_amp = mi.mi(df, path=dst_folder)  # normalize data and quantize
+    df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma = quant.quant(df,
+                                                                                      path=dst_folder)  # normalize data and quantize
     plotcsi_quant(df, df_quant, q_amp=q_amp, n=10, path=dst_folder)  # plot 10 random csi and their quantized version
+
+    problist = {}
+    for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
+        problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
+    int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
     choice = -1
     while choice != 0:
