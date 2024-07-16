@@ -46,6 +46,7 @@ def quant(df, qb=QB, path=""):
         f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
 
     mean_csi = quantize(save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV)), 0, 2 ** q_amp - 1)
+
     return df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma
 
 

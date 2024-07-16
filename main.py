@@ -1,7 +1,7 @@
+import csv
 import os
 
 import numpy as np
-import pandas as pd
 
 import correlation
 import multidim_corr
@@ -9,33 +9,19 @@ import quant
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
 from plotcsi import plotcsi_quant
+from setup import print_menu, set_params, load_data
 from time_evolution import plot_time_evolution_for_sc
-from whd import whd_int
+from whd import whd_int, whd_matrix, cross_whd_matrix
 
 np.random.seed(seed=527302)
-
-
-def print_menu():
-    """
-    :return: choice from the user
-    """
-    print("-------------------------")
-    print("0. Exit")
-    print("1. Plot magnitude/relative frequency histogram")
-    print("2. Plot evolution in time")
-    print("3. Plot increment/frequency histogram")
-    print("4. Plot auto-correlation function")
-    # print("5. Plot inter-SC correlation")
-    print("5. Plot multidimensional correlation")
-    print("6. Compute mutual information")
-    print("-------------------------")
-    return input("Choose an action: ")
-
 
 if __name__ == '__main__':
 
     ########## INFORMATION SETUP ##########
-    csv_file = 'emptyroom/20ax/capture0.csv'  # file containing the data to be processed
+    workdir = 'emptyroom/20ax/10min/'
+    csv_file = workdir + 'capture0_empty.csv'  # file containing the data to be processed
+    compdir = 'oneperson/20ax/10min/'
+    comparison_file = compdir + 'capture0.csv'
     dst_folder = 'emptyroom/capture0'  # folder path where to save the output of the code, can be an empty string
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -43,43 +29,43 @@ if __name__ == '__main__':
         BW) + STD  # folder containing the list of sub-carriers to be ignored
     #######################################
 
+    num_sc, colnames, unneeded = set_params(BW, STD, unneeded_dir)
+
     path = os.path.join(os.getcwd(), csv_file)
+    path_comp = os.path.join(os.getcwd(), comparison_file)
 
-    num_sc = 3.2 * BW
-    if STD == 'ax':
-        num_sc = num_sc * 4
+    df = load_data(path, colnames, unneeded)
+    df_comp = load_data(path_comp, colnames, unneeded)
 
-    colnames = ["SC" + str(i) for i in range(0, int(num_sc))]
-    df = pd.read_csv(path, names=colnames, header=None)
-
-    with open(os.path.join(os.getcwd(), unneeded_dir)) as f:
-        unneeded = f.read().splitlines()
-
-    for title in df:
-        if title in unneeded:
-            del df[title]
-        else:
-            # format complex numbers into readable values
-            df[title] = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in df[title])
-
-    # removing impact of AGC on data
-    for index, row in df.iterrows():
-        # each row is a time sample over the sub-carriers (frequencies)
-        # compute the mean amplitude over the frequencies and normalize the values by it (i.e. by the energy of the CSI)
-        mean = row.mean()
-        df.iloc[index] = row / mean
-
+    # NORMALIZATION AND QUANTIZATION
     # plotcsi(df, 10)  # plot 10 random csi
-    df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma = quant.quant(df,
-                                                                                      path=dst_folder)  # normalize data and quantize
+    df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma = quant.quant(df, path=dst_folder)
     plotcsi_quant(df, df_quant, q_amp=q_amp, n=10, path=dst_folder)  # plot 10 random csi and their quantized version
 
+    df_quant_comp, art_incr_quant_comp, incr_quant_comp, q_inc_comp, q_amp_comp, mean_csi_comp, sigma_comp = quant.quant(
+        df_comp,
+        path=dst_folder)
+
+    # COMPUTING MUTUAL INFORMATION
     # problist = {}
     # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
     #     problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
     # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
-    whd = whd_int(df_quant, mean_csi)
+    # COMPUTING WEIGHTED HAMMING DISTANCE
+    whd = whd_int(df_quant, mean_csi_comp)
+    whd_std, whd_mean = whd_matrix(workdir=compdir, unneeded=unneeded, colnames=colnames,
+                                   dst_folder=dst_folder,
+                                   q_amp=q_amp)
+
+    whd_std_comp, whd_mean_comp = cross_whd_matrix(workdir, compdir, unneeded=unneeded, colnames=colnames, q_amp=q_amp)
+
+    with open(dst_folder + "/whd_std.txt", "w") as f:
+        wr = csv.writer(f, delimiter="\t")
+        wr.writerows(whd_std)
+    with open(dst_folder + "/whd_mean.txt", "w") as f:
+        wr = csv.writer(f, delimiter="\t")
+        wr.writerows(whd_mean)
 
     choice = -1
     while choice != 0:
