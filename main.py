@@ -11,9 +11,17 @@ from increments import plot_increments_for_sc
 from plotcsi import plotcsi_quant
 from setup import print_menu, set_params, load_data
 from time_evolution import plot_time_evolution_for_sc
-from whd import whd_int, whd_matrix, cross_whd_matrix
+from whd import whd_matrix, cross_whd_matrix
 
 np.random.seed(seed=527302)
+
+
+def save_whd(path, outfile, idata):
+    global f, wr
+    with open(path + outfile, "w") as f:
+        wr = csv.writer(f, delimiter="\t")
+        wr.writerows(idata)
+
 
 if __name__ == '__main__':
 
@@ -53,19 +61,28 @@ if __name__ == '__main__':
     # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
     # COMPUTING WEIGHTED HAMMING DISTANCE
-    whd = whd_int(df_quant, mean_csi_comp)
-    whd_std, whd_mean = whd_matrix(workdir=compdir, unneeded=unneeded, colnames=colnames,
-                                   dst_folder=dst_folder,
-                                   q_amp=q_amp)
+    # whd = whd_int(df_quant, mean_csi_comp)
+    whd_std_work, whd_mean_work = whd_matrix(workdir=workdir, unneeded=unneeded, colnames=colnames,
+                                             dst_folder=dst_folder,
+                                             q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_empty.txt", whd_std_work)
+    save_whd(dst_folder, "/whd_mean_empty.txt", whd_mean_work)
 
-    whd_std_comp, whd_mean_comp = cross_whd_matrix(workdir, compdir, unneeded=unneeded, colnames=colnames, q_amp=q_amp)
+    whd_std_comp, whd_mean_comp = whd_matrix(workdir=compdir, unneeded=unneeded, colnames=colnames,
+                                             dst_folder=dst_folder,
+                                             q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_1pers.txt", whd_std_comp)
+    save_whd(dst_folder, "/whd_mean_1pers.txt", whd_mean_comp)
 
-    with open(dst_folder + "/whd_std.txt", "w") as f:
-        wr = csv.writer(f, delimiter="\t")
-        wr.writerows(whd_std)
-    with open(dst_folder + "/whd_mean.txt", "w") as f:
-        wr = csv.writer(f, delimiter="\t")
-        wr.writerows(whd_mean)
+    cross_whd_std, cross_whd_mean = cross_whd_matrix(workdir, compdir, unneeded=unneeded, colnames=colnames,
+                                                     q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_compared.txt", cross_whd_std)
+    save_whd(dst_folder, "/whd_mean_compared.txt", cross_whd_mean)
+
+    cross_whd_std1, cross_whd_mean1 = cross_whd_matrix(compdir, workdir, unneeded=unneeded, colnames=colnames,
+                                                       q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_compared1.txt", cross_whd_std1)
+    save_whd(dst_folder, "/whd_mean_compared1.txt", cross_whd_mean1)
 
     choice = -1
     while choice != 0:

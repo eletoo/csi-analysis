@@ -56,8 +56,9 @@ def whd_matrix(workdir, unneeded=[], colnames=[], dst_folder='', q_amp=8):
 
     dfs = []
     for file in os.listdir(workdir):
-        if file.endswith('.csv'):
+        if not file.startswith("mean") and file.endswith('.csv'):
             dfs.append(load_data(workdir + file, colnames, unneeded))
+    normfact = len(colnames) * ((2 ** q_amp) - 1)
 
     for i in range(len(dfs)):
         # df_quant = quantize(dfs[i], 0, 2 ** q_amp - 1)
@@ -71,33 +72,33 @@ def whd_matrix(workdir, unneeded=[], colnames=[], dst_folder='', q_amp=8):
             l = []
             for e in d.values():
                 l.append(e)
-            m_stddev[i][j] = np.std(l)
-            m_mean[i][j] = np.mean(l)
+            m_stddev[i][j] = np.std(l) / normfact
+            m_mean[i][j] = np.mean(l) / normfact
     return m_stddev, m_mean
 
 
-def cross_whd_matrix(workdir, compdir, unneeded=[], colnames=[], q_amp=8):
+def cross_whd_matrix(reference, experiment, unneeded=[], colnames=[], q_amp=8):
     dfi = []
-    for file in os.listdir(workdir):
-        if file.endswith('.csv'):
-            dfi.append(load_data(workdir + file, colnames, unneeded))
+    for file in os.listdir(reference):
+        if not file.startswith("mean") and file.endswith('.csv'):
+            dfi.append(load_data(reference + file, colnames, unneeded))
     dfj = []
-    for file in os.listdir(compdir):
-        if file.endswith('.csv'):
-            dfj.append(load_data(compdir + file, colnames, unneeded))
+    for file in os.listdir(experiment):
+        if not file.startswith("mean") and file.endswith('.csv'):
+            dfj.append(load_data(experiment + file, colnames, unneeded))
 
     m_stddev = [[0 for _ in range(len(dfi))] for _ in range(len(dfj))]
     m_mean = [[0 for _ in range(len(dfi))] for _ in range(len(dfj))]
-
+    normfact = len(colnames) * ((2 ** q_amp) - 1)
     for i in range(len(dfi)):
-        mean_csi = quantize(save_mean_csi(dfi[i], os.path.join(workdir, "mean" + str(i) + ".csv")), 0, 2 ** q_amp - 1)
+        mean_csi = quantize(save_mean_csi(dfi[i], os.path.join(reference, "mean" + str(i) + ".csv")), 0, 2 ** q_amp - 1)
         for j in range(len(dfj)):
             df_quant2 = quantize(dfj[j], 0, 2 ** q_amp - 1)
             d = whd_int(df_quant2, mean_csi)
             l = []
             for e in d.values():
                 l.append(e)
-            m_stddev[i][j] = np.std(l)
-            m_mean[i][j] = np.mean(l)
+            m_stddev[i][j] = np.std(l) / normfact
+            m_mean[i][j] = np.mean(l) / normfact
 
     return m_stddev, m_mean
