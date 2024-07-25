@@ -28,8 +28,8 @@ if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
     workdir = 'emptyroom/20ax/10min/'
     csv_file = workdir + 'capture0_empty.csv'  # file containing the data to be processed
-    compdir = 'oneperson/20ax/10min/'
-    comparison_file = compdir + 'capture0.csv'
+    compdir = 'fourppl/20ax/10min/'
+    comparison_file = compdir + 'capture0_4ppl.csv'
     dst_folder = 'emptyroom/capture0'  # folder path where to save the output of the code, can be an empty string
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -65,14 +65,14 @@ if __name__ == '__main__':
     whd_std_work, whd_mean_work = whd_matrix(workdir=workdir, unneeded=unneeded, colnames=colnames,
                                              dst_folder=dst_folder,
                                              q_amp=q_amp)
-    save_whd(dst_folder, "/whd_std_empty.txt", whd_std_work)
-    save_whd(dst_folder, "/whd_mean_empty.txt", whd_mean_work)
+    save_whd(dst_folder, "/whd_std.txt", whd_std_work)
+    save_whd(dst_folder, "/whd_mean.txt", whd_mean_work)
 
     whd_std_comp, whd_mean_comp = whd_matrix(workdir=compdir, unneeded=unneeded, colnames=colnames,
                                              dst_folder=dst_folder,
                                              q_amp=q_amp)
-    save_whd(dst_folder, "/whd_std_1pers.txt", whd_std_comp)
-    save_whd(dst_folder, "/whd_mean_1pers.txt", whd_mean_comp)
+    save_whd(dst_folder, "/whd_std_1.txt", whd_std_comp)
+    save_whd(dst_folder, "/whd_mean_1.txt", whd_mean_comp)
 
     cross_whd_std, cross_whd_mean = cross_whd_matrix(workdir, compdir, unneeded=unneeded, colnames=colnames,
                                                      q_amp=q_amp)
@@ -111,6 +111,3 @@ if __name__ == '__main__':
             # correlation.save_intercorr(df, path=dst_folder,
             #                            mode=1)  # plot correlation of amplitude across subcarriers
             multidim_corr.save_multidimensional_corr(df, path=dst_folder)
-        elif choice == 6:
-            pass
-            # mutual_info.save_mutual_info(df, path=dst_folder)

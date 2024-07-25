@@ -16,7 +16,6 @@ def print_menu():
     print("4. Plot auto-correlation function")
     # print("5. Plot inter-SC correlation")
     print("5. Plot multidimensional correlation")
-    print("6. Compute mutual information")
     print("-------------------------")
     return input("Choose an action: ")
 

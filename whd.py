@@ -51,8 +51,8 @@ def whd_int(df, ref):
 
 def whd_matrix(workdir, unneeded=[], colnames=[], dst_folder='', q_amp=8):
     # the -1 in the following lines is due to the fact that the last element of the list is the config json file
-    m_stddev = [[0 for _ in range(len(os.listdir(workdir)) - 1)] for _ in range(len(os.listdir(workdir)) - 1)]
-    m_mean = [[0 for _ in range(len(os.listdir(workdir)) - 1)] for _ in range(len(os.listdir(workdir)) - 1)]
+    m_stddev = [[0 for _ in range(len(os.listdir(workdir)))] for _ in range(len(os.listdir(workdir)))]
+    m_mean = [[0 for _ in range(len(os.listdir(workdir)))] for _ in range(len(os.listdir(workdir)))]
 
     dfs = []
     for file in os.listdir(workdir):
