@@ -18,41 +18,33 @@ def quant(df, qb=QB, path=""):
 
     df = normalize(df)
 
-    # rows, cols = df.shape
-    # increments = np.nan * np.ones((int(rows * (rows - 1) / 2), cols))
+    art_incrq, incrq, mu, sigma = quantize_incr(df, path, qb)
 
-    # # compute increments between CSI at time t and CSI at time t + delta_t (for each t and for each delta_t)
-    # cur_row = 0
-    # for i in tqdm(range(rows), total=rows):
-    #     row = df.iloc[i, :]
-    #     for j in range(i + 1, rows):
-    #         diff = (row - df.iloc[j, :]).values
-    #         increments[cur_row, :] = diff
-    #         cur_row += 1
-
-    increments = df.diff().dropna()  # DEBUG - compute increments between CSI at time t and CSI at time t + 1
-    mu, sigma = norm.fit(increments, loc=0)  # sigma = stddev
+    with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
+        f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
 
     q_inc = qb
     dstar = 3 * sigma
     q_amp = math.ceil(math.log2(1 / dstar * (2 ** q_inc + 1)))  # quantize amplitudes over 2^q_amp levels
 
     df_quant = quantize(df, 0, 2 ** q_amp - 1)  # quantize data over 2^qb levels
+    save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
+    mean_csi = quantize(mean_csi_comp(df), 0, 2 ** q_amp - 1)
+
+    return df_quant, art_incrq, incrq, q_inc, q_amp, mean_csi, sigma
+
+
+def quantize_incr(df, path, qb):
+    increments = df.diff().dropna()
+    mu, sigma = norm.fit(increments, loc=0)  # sigma = stddev
     art_incr_quant, incr_quant = quantize_norm(increments, sigma, qb, mu=0,
                                                path=path)  # quantize increments over 2^qb levels
-
-    # fit normal distribution to increments to compute mean and sigma of the distribution
-    with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
-        f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
-
-    mean_csi = quantize(save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV)), 0, 2 ** q_amp - 1)
-
-    return df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma
+    return art_incr_quant, incr_quant, mu, sigma
 
 
 def quantize_norm(increments, sigma, qb, mu=0, path=''):
     dstar = 3 * sigma
-    ss = norm.rvs(loc=mu, scale=sigma, size=increments.size)
+    ss = norm.rvs(loc=mu, scale=sigma, size=increments.size)  # generate artificial sample
     sample = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(ss)
     sample2 = np.vectorize(lambda x: -dstar if x < -dstar else dstar if x > dstar else x)(increments.values.flatten())
 
@@ -67,7 +59,6 @@ def quantize_norm(increments, sigma, qb, mu=0, path=''):
     print(sum(occ))
 
     hist_dist_compared(path, qb, qsamples, qsamples2)
-    plot_dist_compared(path, qb, qsamples, qsamples2)
 
     return qsamples, qsamples2
 
@@ -88,20 +79,11 @@ def hist_dist_compared(path, qb, qsamples, qsamples2):
     plt.close()
 
 
-def plot_dist_compared(path, qb, qsamples, qsamples2):
-    y, x = np.histogram(qsamples, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
-    y = y / sum(y)  # normalize histogram
-    y2, x = np.histogram(qsamples2, bins=range(- 2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1))
-    y2 = y2 / sum(y2)  # normalize histogram
-    plt.plot(x[:-1], y, label='Sample')
-    plt.plot(x[:-1], y2, label=str(qb) + ' bits')
-    plt.gca().set_xticks(x[:-1])
-    plt.yscale('log')
-    plt.legend()
-    plt.grid()
-    # plt.show()
-    plt.savefig(os.path.join(path, "plot_quant_incr_VS_sample_" + str(qb) + ".pdf"))
-    plt.close()
+def mean_csi_comp(df):
+    """Compute mean CSI values.
+    :param df: dataframe to compute the mean CSI on
+    """
+    return df.mean()
 
 
 def save_mean_csi(df, path):
@@ -117,7 +99,6 @@ def save_mean_csi(df, path):
             mcsi.write(str(df[col].mean()) + ",")
         mcsi.truncate(mcsi.tell() - 1)  # remove last comma
     mcsi.close()
-    return pd.read_csv(path, names=df.columns)
 
 
 def normalize(df):

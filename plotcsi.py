@@ -22,6 +22,7 @@ def plotcsi(df, n=1, title='CSI Amplitude', xlabel='Subcarrier index', ylabel='A
     plt.savefig('csi.pdf')
     plt.close()
 
+
 def plotcsi_quant(df, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Subcarrier index ($n$)', ylabel=r'$A_c$',
                   path=''):
     # undo quantization
