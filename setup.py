@@ -1,7 +1,8 @@
 import os
 
-import matplotlib.pyplot as plt
 import pandas as pd
+
+from hdf2df import hdf2df
 
 
 def print_menu():
@@ -28,13 +29,22 @@ def load_data(path, colnames, unneeded):
     :param unneeded: list of sub-carriers to remove
     :return: the data frame
     """
-    df = pd.read_csv(path, names=colnames, header=None)
-    for title in df:
-        if title in unneeded:
-            del df[title]
-        else:
-            # format complex numbers into readable values
-            df[title] = pd.DataFrame(abs(complex(value.replace(" ", "").replace("i", "j"))) for value in df[title])
+    if path.endswith(".csv"):
+        df = pd.read_csv(path, names=colnames, header=None)
+        for title in df:
+            if title in unneeded:
+                del df[title]
+            else:
+                # format complex numbers into readable values
+                df[title] = pd.DataFrame(
+                    abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for value
+                    in
+                    df[title])
+    elif path.endswith('.h5'):
+        df = hdf2df(path)
+        df = df.applymap(lambda x: abs(complex(x)))
+        df.columns = [cn for cn in colnames if cn not in unneeded]
+
     # REMOVE EFFECT OF AGC
     for index, row in df.iterrows():
         # each row is a time sample over the sub-carriers (frequencies)

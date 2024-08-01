@@ -27,11 +27,11 @@ def save_whd(path, outfile, idata):
 
 if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
-    workdir = 'emptyroom/20ax/10min/'
-    csv_file = workdir + 'capture0_empty.csv'  # file containing the data to be processed
+    workdir = 'hdf5/'
+    csv_file = workdir + 'csi_active_clean.h5'  # file containing the data to be processed
     compdir = 'fourppl/20ax/10min/'
     comparison_file = compdir + 'capture0_4ppl.csv'
-    dst_folder = 'emptyroom/capture0'  # folder path where to save the output of the code, can be an empty string
+    dst_folder = 'hdf5/clean'  # folder path where to save the output of the code, can be an empty string
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     unneeded_dir = 'dontPlot/unnecessaryPlots' + str(
@@ -68,28 +68,28 @@ if __name__ == '__main__':
     # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
     # COMPUTING WEIGHTED HAMMING DISTANCE
-    # whd = whd_int(df_quant, mean_csi_comp)
-    # whd_std_work, whd_mean_work = whd_matrix(workdir=workdir, unneeded=unneeded, colnames=colnames,
-    #                                          dst_folder=dst_folder,
-    #                                          q_amp=q_amp)
-    # save_whd(dst_folder, "/whd_std.txt", whd_std_work)
-    # save_whd(dst_folder, "/whd_mean.txt", whd_mean_work)
-    #
-    # whd_std_comp, whd_mean_comp = whd_matrix(workdir=compdir, unneeded=unneeded, colnames=colnames,
-    #                                          dst_folder=dst_folder,
-    #                                          q_amp=q_amp)
-    # save_whd(dst_folder, "/whd_std_1.txt", whd_std_comp)
-    # save_whd(dst_folder, "/whd_mean_1.txt", whd_mean_comp)
-    #
-    # cross_whd_std, cross_whd_mean = cross_whd_matrix(workdir, compdir, unneeded=unneeded, colnames=colnames,
-    #                                                  q_amp=q_amp)
-    # save_whd(dst_folder, "/whd_std_compared.txt", cross_whd_std)
-    # save_whd(dst_folder, "/whd_mean_compared.txt", cross_whd_mean)
-    #
-    # cross_whd_std1, cross_whd_mean1 = cross_whd_matrix(compdir, workdir, unneeded=unneeded, colnames=colnames,
-    #                                                    q_amp=q_amp)
-    # save_whd(dst_folder, "/whd_std_compared1.txt", cross_whd_std1)
-    # save_whd(dst_folder, "/whd_mean_compared1.txt", cross_whd_mean1)
+    # whd = whd_int(df_quant, mean_csi2)
+    whd_std_work, whd_mean_work = whd_matrix(workdir=workdir, unneeded=unneeded, colnames=colnames,
+                                             dst_folder=dst_folder,
+                                             q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std.txt", whd_std_work)
+    save_whd(dst_folder, "/whd_mean.txt", whd_mean_work)
+
+    whd_std_comp, whd_mean_comp = whd_matrix(workdir=compdir, unneeded=unneeded, colnames=colnames,
+                                             dst_folder=dst_folder,
+                                             q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_1.txt", whd_std_comp)
+    save_whd(dst_folder, "/whd_mean_1.txt", whd_mean_comp)
+
+    cross_whd_std, cross_whd_mean = cross_whd_matrix(workdir, compdir, unneeded=unneeded, colnames=colnames,
+                                                     q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_compared.txt", cross_whd_std)
+    save_whd(dst_folder, "/whd_mean_compared.txt", cross_whd_mean)
+
+    cross_whd_std1, cross_whd_mean1 = cross_whd_matrix(compdir, workdir, unneeded=unneeded, colnames=colnames,
+                                                       q_amp=q_amp)
+    save_whd(dst_folder, "/whd_std_compared1.txt", cross_whd_std1)
+    save_whd(dst_folder, "/whd_mean_compared1.txt", cross_whd_mean1)
 
     # PLOTTING
     # plt_superimposed_whd(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
@@ -97,29 +97,29 @@ if __name__ == '__main__':
     # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
 
     choice = -1
-while choice != 0:
-    choice = int(print_menu())
-    if choice == 0:  # exit
-        pass
-    if choice == 1:
-        batch_size = len(df)
-        for x in reversed(range(1, len(df))):  # create batches of size x (as long as possible)
-            if len(df) % x == 0:
-                batch_size = x
-                break
-        for title in df:
-            plot_histogram_for_sc(title, df, batch_size, path=dst_folder)
-            # plot_histogram_for_sc(title, df_quant, batch_size, path=os.path.join(dst_folder, "quantized"))
-    elif choice == 2:
-        # plot_time_evolution_for_sc(df, path=dst_folder)
-        plot_time_evolution_for_sc(df, df_quant, path=os.path.join(dst_folder, "quantized"))
-    elif choice == 3:
-        plot_increments_for_sc(df, path=dst_folder)
-    elif choice == 4:
-        correlation.save_autocorrelation(df, path=dst_folder)
-    elif choice == 5:
-        # correlation.save_intercorr(df, path=dst_folder,
-        #                            mode=0)  # plot correlation of increments across adjacent subcarriers
-        # correlation.save_intercorr(df, path=dst_folder,
-        #                            mode=1)  # plot correlation of amplitude across subcarriers
-        multidim_corr.save_multidimensional_corr(df, path=dst_folder)
+    while choice != 0:
+        choice = int(print_menu())
+        if choice == 0:  # exit
+            pass
+        if choice == 1:
+            batch_size = len(df)
+            for x in reversed(range(1, len(df))):  # create batches of size x (as long as possible)
+                if len(df) % x == 0:
+                    batch_size = x
+                    break
+            for title in df:
+                plot_histogram_for_sc(title, df, batch_size, path=dst_folder)
+                # plot_histogram_for_sc(title, df_quant, batch_size, path=os.path.join(dst_folder, "quantized"))
+        elif choice == 2:
+            # plot_time_evolution_for_sc(df, path=dst_folder)
+            plot_time_evolution_for_sc(df, df_quant, path=os.path.join(dst_folder, "quantized"))
+        elif choice == 3:
+            plot_increments_for_sc(df, path=dst_folder)
+        elif choice == 4:
+            correlation.save_autocorrelation(df, path=dst_folder)
+        elif choice == 5:
+            # correlation.save_intercorr(df, path=dst_folder,
+            #                            mode=0)  # plot correlation of increments across adjacent subcarriers
+            # correlation.save_intercorr(df, path=dst_folder,
+            #                            mode=1)  # plot correlation of amplitude across subcarriers
+            multidim_corr.save_multidimensional_corr(df, path=dst_folder)
