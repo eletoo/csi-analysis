@@ -1,15 +1,19 @@
 import os
 
+import numpy as np
 from matplotlib import pyplot as plt
 
+import quant
 from whd import whd
 
 
-def plt_superimposed_whd(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder):
+def plt_superimposed_whd(df_quant, dst_folder):
     plt.title("Distribution of WHD values")
-    plt.hist(whd(df_quant, mean_csi).values(), bins=100, label="Empty Room", alpha=0.5)
-    plt.hist(whd(df_quant3, mean_csi3).values(), bins=100, label="One Person", alpha=0.5)
-    plt.hist(whd(df_quant2, mean_csi2).values(), bins=100, label="Four People", alpha=0.5)
+    i = 0
+    for v in df_quant:
+        hist, edges = np.histogram(whd(v, quant.mean_csi_comp(v)).values(), bins=100)
+        plt.plot(edges[:-1], hist, label="#ppl: " + str(i))
+        i += 1
     plt.grid()
     plt.xlabel(r'$WHD(A_c, A_c^*)$')
     plt.ylabel('Frequency')
