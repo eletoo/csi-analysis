@@ -38,8 +38,7 @@ def load_data(path, colnames, unneeded):
                 # format complex numbers into readable values
                 df[title] = pd.DataFrame(
                     abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for value
-                    in
-                    df[title])
+                    in df[title])
     elif path.endswith('.h5'):
         df = hdf2df(path)
         df = df.applymap(lambda x: abs(complex(x)))
@@ -69,3 +68,7 @@ def set_params(BW, STD, unneeded_dir):
     with open(os.path.join(os.getcwd(), unneeded_dir)) as f:
         unneeded = f.read().splitlines()
     return nsc, colnames, unneeded
+
+
+def removeext(filename):
+    return os.path.splitext(filename)[0]
