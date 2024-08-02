@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 from quant import quantize, mean_csi_comp
 
@@ -41,7 +42,7 @@ def whd_matrix(dfs, workdir, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None)
 
     m_stddev = {}
     m_mean = {}
-    for k, v in dfs.items():  # for each capture k in the experiment
+    for k, v in tqdm(dfs.items()):  # for each capture k in the experiment
         mean_csi = quantize(mean_csi_comp(dfs[k]), 0, 2 ** q_amp - 1)  # quantize the mean CSI of k
         m_stddev[k] = {}
         m_mean[k] = {}
@@ -76,7 +77,7 @@ def full_whd_matrix(dfs, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None):
 
     m_stddev = {}
     m_mean = {}
-    for k, v in dfs.items():  # for each folder
+    for k, v in tqdm(dfs.items()):  # for each folder
         m_stddev[k] = {}
         m_mean[k] = {}
         for k1, v1 in dfs[k].items():  # for each capture

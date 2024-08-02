@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 import correlation
 import multidim_corr
@@ -49,11 +50,10 @@ def bsc_processing(dforig, dfq, outpath):
 
 if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
-    workdir = 'hdf5/'
-    csv_file = workdir + 'csi_active_clean.h5'  # file containing the data to be processed
-    compdir = 'fourppl/20ax/10min/'
-    comparison_file = compdir + 'capture0_4ppl.csv'
-    dst_folder = 'hdf5/clean'  # folder path where to save the output of the code, can be an empty string
+    dirs = ["hdf5/",
+            'fourppl/20ax/10min/',
+            'oneperson/20ax/10min/',
+            'emptyroom/20ax/10min/']  # folders containing the data
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     unneeded_dir = 'dontPlot/unnecessaryPlots' + str(
@@ -62,18 +62,16 @@ if __name__ == '__main__':
 
     num_sc, colnames, unneeded = set_params(BW, STD, unneeded_dir)
 
-    dirs = [compdir, workdir]
-    # dirs = [workdir, compdir, 'oneperson/20ax/10min/']
     dfs = {}
     for d in dirs:
         dfs[d] = {}
         p = os.path.join(os.getcwd(), d)
-        for f in os.listdir(d):
+        for f in tqdm(os.listdir(d)):
             if os.path.isfile(p + f) and (f.endswith('.h5') or f.endswith('.csv')):
-                dfs[d][f] = pd.DataFrame(load_data(os.path.join(p, f), colnames, unneeded))
+                dfs[d][f] = pd.DataFrame(load_data(os.path.join(p, f), colnames, unneeded))  # load data
 
     dfqs = {}
-    for k, dframes in dfs.items():  # for each experiment (folder)
+    for k, dframes in tqdm(dfs.items()):  # for each experiment (folder)
         dfqs[k] = {}
         for k1, df in dframes.items():  # for each capture (file in the folder)
             dst_folder = os.path.join(os.getcwd(), k, removeext(k1))
@@ -86,25 +84,31 @@ if __name__ == '__main__':
 
             # bsc_processing(df, df_quant, dst_folder)
 
-    # COMPUTING MUTUAL INFORMATION
+    # COMPUTING MUTUAL INFORMATION - NOT USING IT FOR NOW (N.B. NOT REFACTORED)
     # problist = {}
     # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
     #     problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
     # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
     # COMPUTING WEIGHTED HAMMING DISTANCE
-    # whd = whd_int(df_quant, mean_csi2)
     dst_folder = os.path.join(os.getcwd(), "out")
-    if not os.path.exists(dst_folder):
-        os.makedirs(dst_folder)
-    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
-                                        dfqs=dfqs,  # dictionary containing the quantized data
-                                        nsc=num_sc,  # number of subcarriers
-                                        q_amp=q_amp,  # quantization level
-                                        stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
+    # if not os.path.exists(dst_folder):
+    #     os.makedirs(dst_folder)
+    # whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
+    #                                     dfqs=dfqs,  # dictionary containing the quantized data
+    #                                     nsc=num_sc,  # number of subcarriers
+    #                                     q_amp=q_amp,  # quantization level
+    #                                     stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
 
     # PLOTTING
-    dfq_plot = []  # TODO: add dataframes to plot
-    plt_superimposed_whd(dfqs, dst_folder)
+    dfq_plot = [dfqs['emptyroom/20ax/10min/']['capture0_empty.csv'],
+                dfqs['oneperson/20ax/10min/']['capture0.csv'],
+                # dfqs['twoppl/40ax/10min/']['capture0.csv'],
+                # dfqs['threeppl/40ax/10min/']['capture0.csv'],
+                dfqs['fourppl/20ax/10min/']['capture0_4ppl.csv'],
+                # dfqs['fiveppl/40ax/10min/']['capture0.csv'],
+                # dfqs['sixppl/40ax/10min/']['capture0.csv']
+                ]
+    plt_superimposed_whd(dfq_plot, dst_folder)
     # plt_whd_boxplot(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
     # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
