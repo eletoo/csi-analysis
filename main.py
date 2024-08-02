@@ -9,9 +9,10 @@ import quant
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
 from plotcsi import plotcsi_quant
+from plotwhd import plt_superimposed_whd
 from setup import print_menu, set_params, load_data, removeext
 from time_evolution import plot_time_evolution_for_sc
-from whd import whd_matrix
+from whd import full_whd_matrix
 
 np.random.seed(seed=527302)
 
@@ -83,32 +84,27 @@ if __name__ == '__main__':
             dfqs[k][k1] = df_quant
             plotcsi_quant(df, df_quant, q_amp=q_amp, n=10, path=dst_folder)
 
-            bsc_processing(df, df_quant, dst_folder)
+            # bsc_processing(df, df_quant, dst_folder)
 
-        # COMPUTING MUTUAL INFORMATION
-        # problist = {}
-        # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
-        #     problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
-        # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
+    # COMPUTING MUTUAL INFORMATION
+    # problist = {}
+    # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
+    #     problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
+    # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
-        # COMPUTING WEIGHTED HAMMING DISTANCE
-        # whd = whd_int(df_quant, mean_csi2)
-        # dst_folder = os.path.join(os.getcwd(), k)
-        # whd_std, whd_mean = whd_matrix(dfs=dfs[k],  # passing dfs relative to a single experiment
-        #                                workdir=k,  # name of the folder containing the data
-        #                                dfqs=dfqs,  # dictionary containing the quantized data
-        #                                nsc=num_sc,  # number of subcarriers
-        #                                q_amp=q_amp,  # quantization level
-        #                                stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
-        dst_folder = os.path.join(os.getcwd(), k)
-        x_whd_std, x_whd_mean = whd_matrix(dfs=dfs[k],  # passing dfs relative to a single experiment
-                                           workdir=k,  # name of the folder containing the data
-                                           dfqs=dfqs,  # dictionary containing the quantized data
-                                           nsc=num_sc,  # number of subcarriers
-                                           q_amp=q_amp,  # quantization level
-                                           stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
+    # COMPUTING WEIGHTED HAMMING DISTANCE
+    # whd = whd_int(df_quant, mean_csi2)
+    dst_folder = os.path.join(os.getcwd(), "out")
+    if not os.path.exists(dst_folder):
+        os.makedirs(dst_folder)
+    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
+                                        dfqs=dfqs,  # dictionary containing the quantized data
+                                        nsc=num_sc,  # number of subcarriers
+                                        q_amp=q_amp,  # quantization level
+                                        stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
 
     # PLOTTING
-    # plt_superimposed_whd(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
+    dfq_plot = []  # TODO: add dataframes to plot
+    plt_superimposed_whd(dfqs, dst_folder)
     # plt_whd_boxplot(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
     # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
