@@ -54,7 +54,8 @@ if __name__ == '__main__':
         'fourppl/20ax/10min/',
         # "hdf5/",
         'oneperson/20ax/10min/',
-        'emptyroom/20ax/10min/']  # folders containing the data
+        'emptyroom/20ax/10min/'
+    ]  # folders containing the data
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
     unneeded_dir = 'dontPlot/unnecessaryPlots' + str(
@@ -63,7 +64,7 @@ if __name__ == '__main__':
 
     num_sc, colnames, unneeded = set_params(BW, STD, unneeded_dir)
 
-    print("Loading data...")
+    print("\nLoading data...\n")
     dfs = {}
     for d in tqdm(dirs):
         dfs[d] = {}
@@ -72,7 +73,7 @@ if __name__ == '__main__':
             if os.path.isfile(p + f) and (f.endswith('.h5') or f.endswith('.csv')):
                 dfs[d][f] = pd.DataFrame(load_data(os.path.join(p, f), colnames, unneeded))  # load data
 
-    print("Quantizing data...")
+    print("\nQuantizing data...\n")
     dfqs = {}
     for k, dframes in tqdm(dfs.items()):  # for each experiment (folder)
         dfqs[k] = {}
@@ -94,10 +95,10 @@ if __name__ == '__main__':
     # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
     # COMPUTING WEIGHTED HAMMING DISTANCE
-    print("Computing WHD...")
+    print("\nComputing WHD...\n")
     dst_folder = os.path.join(os.getcwd(), "out")
-    # if not os.path.exists(dst_folder):
-    #     os.makedirs(dst_folder)
+    if not os.path.exists(dst_folder):
+        os.makedirs(dst_folder)
     # whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
     #                                     dfqs=dfqs,  # dictionary containing the quantized data
     #                                     nsc=num_sc,  # number of subcarriers
@@ -105,14 +106,16 @@ if __name__ == '__main__':
     #                                     stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
 
     # PLOTTING
-    dfq_plot = [dfqs['emptyroom/20ax/10min/']['capture0_empty.csv'],
-                dfqs['oneperson/20ax/10min/']['capture0.csv'],
-                # dfqs['twoppl/40ax/10min/']['capture0.csv'],
-                # dfqs['threeppl/40ax/10min/']['capture0.csv'],
-                dfqs['fourppl/20ax/10min/']['capture0_4ppl.csv'],
-                # dfqs['fiveppl/40ax/10min/']['capture0.csv'],
-                # dfqs['sixppl/40ax/10min/']['capture0.csv']
-                ]
+    dfq_plot = [
+        dfqs['emptyroom/20ax/10min/']['capture0_empty.csv'],
+        dfqs['oneperson/20ax/10min/']['capture0.csv'],
+        # dfqs['twoppl/40ax/10min/']['capture0.csv'],
+        # dfqs['threeppl/40ax/10min/']['capture0.csv'],
+        dfqs['fourppl/20ax/10min/']['capture0_4ppl.csv'],
+        # dfqs['fiveppl/40ax/10min/']['capture0.csv'],
+        # dfqs['sixppl/40ax/10min/']['capture0.csv'],
+        # dfqs['hdf5/']['csi_active_clean.h5'],
+    ]
     plt_superimposed_whd(dfq_plot, dst_folder)
     # plt_whd_boxplot(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
     # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)

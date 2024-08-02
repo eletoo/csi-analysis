@@ -7,8 +7,8 @@ from tqdm import tqdm
 
 from quant import quantize, mean_csi_comp
 
-MTXSTDDEV = "whd_std.csv"
-MTXMEAN = "whd_mean.csv"
+MTXSTDDEV = "whd_std.json"
+MTXMEAN = "whd_mean.json"
 
 
 def whd(df, ref):

@@ -11,7 +11,7 @@ def plt_superimposed_whd(df_quant, dst_folder):
     plt.title("Distribution of WHD values")
     i = 0
     for v in df_quant:
-        hist, edges = np.histogram(whd(v, quant.mean_csi_comp(v)).values(), bins=100)
+        hist, edges = np.histogram(list(whd(v, quant.mean_csi_comp(v)).values()), bins=100)
         plt.plot(edges[:-1], hist, label="#ppl: " + str(i))
         i += 1
     plt.grid()
