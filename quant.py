@@ -3,7 +3,6 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from scipy.stats import norm
 
 MEAN_CSI_CSV = "mean_CSI.csv"
@@ -31,7 +30,7 @@ def quant(df, qb=QB, path=""):
     save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
     mean_csi = quantize(mean_csi_comp(df), 0, 2 ** q_amp - 1)
 
-    return df_quant, art_incrq, incrq, q_inc, q_amp, mean_csi, sigma
+    return df, df_quant, art_incrq, incrq, q_inc, q_amp, mean_csi, sigma
 
 
 def quantize_incr(df, path, qb):
@@ -56,7 +55,7 @@ def quantize_norm(increments, sigma, qb, mu=0, path=''):
 
     # make sure that the distribution integrates to 1
     occ = [qsamples.count(i) / len(qsamples) for i in range(-2 ** (qb - 1) + 1, 2 ** (qb - 1) + 1)]
-    print(sum(occ))
+    print("\n" + str(sum(occ)) + "\n")
 
     hist_dist_compared(path, qb, qsamples, qsamples2)
 
@@ -87,7 +86,7 @@ def mean_csi_comp(df):
     """Compute mean CSI values.
     :param df: dataframe to compute the mean CSI on
     """
-    return df.mean()
+    return df.mean(axis=0)
 
 
 def save_mean_csi(df, path):

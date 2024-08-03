@@ -54,11 +54,11 @@ def whd_matrix(dfs, workdir, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None)
 
     m_stddev = {}
     m_mean = {}
-    for k, v in tqdm(dfs.items()):  # for each capture k in the experiment
+    for k, v in tqdm(dfs.items(), colour="red"):  # for each capture k in the experiment
         mean_csi = quantize(mean_csi_comp(dfs[k]), 0, 2 ** q_amp - 1)  # quantize the mean CSI of k
         m_stddev[k] = {}
         m_mean[k] = {}
-        for k1, v1 in dfs.items():  # for each capture k1 in the experiment
+        for k1, v1 in tqdm(dfs.items(), colour="green"):  # for each capture k1 in the experiment
             d = whd(dfqs[workdir][k1], mean_csi)  # compute the WHD between the mean CSI of k and the CSIs of k1
             l = []
             for e in d.values():
@@ -103,10 +103,10 @@ def full_whd_matrix(dfs, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None):
 
     m_stddev = {}
     m_mean = {}
-    for k, v in tqdm(dfs.items()):  # for each folder
+    for k, v in tqdm(dfs.items(), colour="red"):  # for each folder
         m_stddev[k] = {}
         m_mean[k] = {}
-        for k1, v1 in dfs[k].items():  # for each capture
+        for k1, v1 in tqdm(dfs[k].items(), colour="green"):  # for each capture
             mean_csi = quantize(mean_csi_comp(dfs[k][k1]), 0, 2 ** q_amp - 1)  # quantize the mean CSI of capture k1
             m_stddev[k][k1] = {}
             m_mean[k][k1] = {}

@@ -23,7 +23,8 @@ def plotcsi(df, n=1, title='CSI Amplitude', xlabel='Subcarrier index', ylabel='A
     plt.close()
 
 
-def plotcsi_quant(df, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Subcarrier index ($n$)', ylabel=r'$A_c$',
+def plotcsi_quant(dfnorm, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Subcarrier index ($n$)',
+                  ylabel=r'$A_c$',
                   path=''):
     # undo quantization
     a = 0
@@ -31,12 +32,10 @@ def plotcsi_quant(df, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Su
     dequant = (df_quant - a) * (b - a)
     dequant = quant.normalize(dequant)
 
-    dfnorm = quant.normalize(df)
-
     # plt.figure()
     fig, ax = plt.subplots(3, 1, sharex=True)
     for i in range(n):
-        idx = np.random.randint(0, len(df))
+        idx = np.random.randint(0, len(dfnorm))
         ax[0].plot(dfnorm.iloc[idx], label=r'$A({' + str(idx) + '},n)$')
         ax[1].plot(df_quant.iloc[idx], label=r'$A({' + str(idx) + '},n)^q$')
         ax[2].plot(dfnorm.iloc[idx] - dequant.iloc[idx], label=r'$A({' + str(idx) + '},n)-A({' + str(idx) + '},n)^q$')
@@ -45,7 +44,7 @@ def plotcsi_quant(df, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=r'Su
     fig.suptitle(title)
 
     plt.xlabel(xlabel)
-    xticks(np.arange(0, len(df.columns), 25), fontsize=6)
+    xticks(np.arange(0, len(dfnorm.columns), 25), fontsize=6)
 
     ax[0].set_ylim(0, 1)
     ax[0].set_ylabel(ylabel)

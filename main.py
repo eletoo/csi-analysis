@@ -67,27 +67,28 @@ if __name__ == '__main__':
 
     print("\nLoading data...\n")
     dfs = {}
-    for d in tqdm(dirs):
+    for d in tqdm(dirs, colour="red"):
         dfs[d] = {}
         p = os.path.join(os.getcwd(), d)
-        for f in os.listdir(d):
+        for f in tqdm(os.listdir(d), colour="green"):
             if os.path.isfile(p + f) and f.endswith('.h5'):  # only hdf5 files from antisense project
                 hdf2csv(os.path.join(p, f), d)  # convert hdf5 to csv
-        for f in os.listdir(d):
+        for f in tqdm(os.listdir(d), colour="green"):
             if os.path.isfile(p + f) and f.endswith('.csv'):
                 dfs[d][f] = pd.DataFrame(load_data(os.path.join(p, f), colnames, unneeded))  # load data
 
     print("\nQuantizing data...\n")
     dfqs = {}
-    for k, dframes in tqdm(dfs.items()):  # for each experiment (folder)
+    for k, dframes in tqdm(dfs.items(), colour="red"):  # for each experiment (folder)
         dfqs[k] = {}
-        for k1, df in dframes.items():  # for each capture (file in the folder)
+        for k1, df in tqdm(dframes.items(), colour="green"):  # for each capture (file in the folder)
             dst_folder = os.path.join(os.getcwd(), k, removeext(k1))
 
             # NORMALIZATION AND QUANTIZATION
-            # plotcsi(df, 10)  # plot 10 random csi
-            df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma = quant.quant(df, path=dst_folder)
+            df, df_quant, art_incr_quant, incr_quant, q_inc, q_amp, mean_csi, sigma = quant.quant(df, path=dst_folder)
+            dfs[k][k1] = df
             dfqs[k][k1] = df_quant
+            # plotcsi(df, 10)  # plot 10 random csi
             plotcsi_quant(df, df_quant, q_amp=q_amp, n=10, path=dst_folder)
 
             # bsc_processing(df, df_quant, dst_folder)
