@@ -2,8 +2,6 @@ import os
 
 import pandas as pd
 
-from hdf2df import hdf2df
-
 
 def print_menu():
     """
@@ -29,8 +27,15 @@ def load_data(path, colnames, unneeded):
     :param unneeded: list of sub-carriers to remove
     :return: the data frame
     """
-    if path.endswith(".csv"):
-        df = pd.read_csv(path, names=colnames, header=None)
+    df = pd.read_csv(path, names=colnames, header=None)
+    df = df.dropna(axis=1)
+    if len(df.columns) != len(colnames):
+        for title in df:
+            df[title] = pd.DataFrame(
+                abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for value
+                in df[title])
+        df.columns = [colnames[i] for i in range(len(colnames)) if colnames[i] not in unneeded]
+    else:
         for title in df:
             if title in unneeded:
                 del df[title]
@@ -39,10 +44,6 @@ def load_data(path, colnames, unneeded):
                 df[title] = pd.DataFrame(
                     abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for value
                     in df[title])
-    elif path.endswith('.h5'):
-        df = hdf2df(path)
-        df = df.applymap(lambda x: abs(complex(x)))
-        df.columns = [cn for cn in colnames if cn not in unneeded]
 
     # REMOVE EFFECT OF AGC
     for index, row in df.iterrows():

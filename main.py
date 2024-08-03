@@ -7,13 +7,13 @@ from tqdm import tqdm
 import correlation
 import multidim_corr
 import quant
+from hdf2df import hdf2csv
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
 from plotcsi import plotcsi_quant
 from plotwhd import plt_superimposed_whd
 from setup import print_menu, set_params, load_data, removeext
 from time_evolution import plot_time_evolution_for_sc
-from whd import full_whd_matrix
 
 np.random.seed(seed=527302)
 
@@ -51,10 +51,10 @@ def bsc_processing(dforig, dfq, outpath):
 if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
     dirs = [
-        'fourppl/20ax/10min/',
-        # "hdf5/",
-        'oneperson/20ax/10min/',
-        'emptyroom/20ax/10min/'
+        # 'fourppl/20ax/10min/',
+        "hdf5/",
+        # 'oneperson/20ax/10min/',
+        # 'emptyroom/20ax/10min/'
     ]  # folders containing the data
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -70,7 +70,10 @@ if __name__ == '__main__':
         dfs[d] = {}
         p = os.path.join(os.getcwd(), d)
         for f in os.listdir(d):
-            if os.path.isfile(p + f) and (f.endswith('.h5') or f.endswith('.csv')):
+            if os.path.isfile(p + f) and f.endswith('.h5'):  # only hdf5 files from antisense project
+                hdf2csv(os.path.join(p, f), d)  # convert hdf5 to csv
+        for f in os.listdir(d):
+            if os.path.isfile(p + f) and f.endswith('.csv'):
                 dfs[d][f] = pd.DataFrame(load_data(os.path.join(p, f), colnames, unneeded))  # load data
 
     print("\nQuantizing data...\n")
