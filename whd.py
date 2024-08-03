@@ -14,10 +14,10 @@ MTXMEAN = "whd_mean.json"
 def whd(df, ref):
     """
     Computes the Weighted Hamming Distance between each CSI (row) of a dataframe and a reference CSI. CSIs are seen as
-    strings of N_sc*nbits bits.
+    strings of N_sc*nbits bits, the weight is given by the conversion from binary to decimal.
     :param df: dataframe, each row is a CSI
     :param ref: reference CSI
-    :return: dictionary indexed by CSI index; each value is the WHD (XOR) between the reference and i-th CSI
+    :return: dictionary indexed by CSI index; each value is the WHD between the reference and i-th CSI
     """
     dists = {}
     for index, row in df.iterrows():
@@ -27,6 +27,18 @@ def whd(df, ref):
 
 
 def whd_matrix(dfs, workdir, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None):
+    """
+    Computes the average Weighted Hamming Distance between the mean CSI of each capture and the CSIs of all the other
+    captures belonging to the same experiment.
+    :param dfs: dictionary of dataframes, each containing the CSI of a capture
+    :param workdir: working directory
+    :param dfqs: dictionary of quantized dataframes
+    :param nsc: number of subcarriers
+    :param q_amp: number of bits used for quantization
+    :param stddevpath: path where to save the standard deviation matrix
+    :param meanpath: path where to save the mean matrix
+    :return: standard deviation and mean matrices
+    """
     # if used, pass the dfs[experiment] dictionary, not dfs as a whole.
     # in main it was used as (in the "for k1, df in dframes.items()" loop):
     # whd_std, whd_mean = whd_matrix(dfs=dfs[k],  # passing dfs relative to a single experiment
@@ -62,17 +74,31 @@ def whd_matrix(dfs, workdir, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None)
 
 
 def whd_to_json(data, path):
+    """
+    Saves a dictionary to a json file.
+    :param data: dictionary
+    :param path: path where to save the file
+    :return: None
+    """
     with open(path, 'w') as fp:
         json.dump(data, fp)
 
 
 def full_whd_matrix(dfs, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None):
+    """
+    Computes the average Weighted Hamming Distance between the mean CSI of each capture and the CSIs of all the other
+    captures.
+    :param dfs: dictionary of dataframes, each containing the CSI of a capture
+    :param dfqs: dictionary of quantized dataframes
+    :param nsc: number of subcarriers
+    :param q_amp: number of bits used for quantization
+    :param stddevpath: path where to save the standard deviation matrix
+    :param meanpath: path where to save the mean matrix
+    :return: standard deviation and mean matrices
+    """
     if len(dfs) == 0:
         return [[0]], [[0]]
 
-    ncap = 0
-    for k, v in dfs.items():
-        ncap += len(v)
     normfact = nsc * ((2 ** q_amp) - 1)
 
     m_stddev = {}

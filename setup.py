@@ -29,7 +29,8 @@ def load_data(path, colnames, unneeded):
     """
     df = pd.read_csv(path, names=colnames, header=None)
     df = df.dropna(axis=1)
-    if len(df.columns) != len(colnames):
+    if len(df.columns) != len(colnames):  # if the number of columns is not the expected one,
+        # the data comes from the hdf5 files, so we treat it differently
         for title in df:
             df[title] = pd.DataFrame(
                 abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for value

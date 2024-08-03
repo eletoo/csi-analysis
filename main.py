@@ -14,6 +14,7 @@ from plotcsi import plotcsi_quant
 from plotwhd import plt_superimposed_whd
 from setup import print_menu, set_params, load_data, removeext
 from time_evolution import plot_time_evolution_for_sc
+from whd import full_whd_matrix
 
 np.random.seed(seed=527302)
 
@@ -52,9 +53,9 @@ if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
     dirs = [
         # 'fourppl/20ax/10min/',
-        "hdf5/",
+        # "hdf5/",
         # 'oneperson/20ax/10min/',
-        # 'emptyroom/20ax/10min/'
+        'emptyroom/20ax/10min/'
     ]  # folders containing the data
     BW = 20  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -102,23 +103,27 @@ if __name__ == '__main__':
     dst_folder = os.path.join(os.getcwd(), "out")
     if not os.path.exists(dst_folder):
         os.makedirs(dst_folder)
-    # whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
-    #                                     dfqs=dfqs,  # dictionary containing the quantized data
-    #                                     nsc=num_sc,  # number of subcarriers
-    #                                     q_amp=q_amp,  # quantization level
-    #                                     stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
+    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
+                                        dfqs=dfqs,  # dictionary containing the quantized data
+                                        nsc=num_sc,  # number of subcarriers
+                                        q_amp=q_amp,  # quantization level
+                                        stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
 
     # PLOTTING
     dfq_plot = [
         dfqs['emptyroom/20ax/10min/']['capture0_empty.csv'],
-        dfqs['oneperson/20ax/10min/']['capture0.csv'],
+        # dfqs['oneperson/20ax/10min/']['capture0.csv'],
         # dfqs['twoppl/40ax/10min/']['capture0.csv'],
         # dfqs['threeppl/40ax/10min/']['capture0.csv'],
-        dfqs['fourppl/20ax/10min/']['capture0_4ppl.csv'],
+        # dfqs['fourppl/20ax/10min/']['capture0_4ppl.csv'],
         # dfqs['fiveppl/40ax/10min/']['capture0.csv'],
         # dfqs['sixppl/40ax/10min/']['capture0.csv'],
-        # dfqs['hdf5/']['csi_active_clean.h5'],
+        # dfqs['hdf5/']['rx1_testing0.csv'],
+        # dfqs['hdf5/']['rx2_testing0.csv'],
+        # dfqs['hdf5/']['rx3_testing0.csv'],
+        # dfqs['hdf5/']['rx4_testing0.csv'],
+        # dfqs['hdf5/']['rx5_testing0.csv'],
     ]
-    plt_superimposed_whd(dfq_plot, dst_folder)
+    plt_superimposed_whd(dfq_plot, dst_folder, labels=["Empty Room"])
     # plt_whd_boxplot(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
     # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)

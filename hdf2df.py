@@ -4,13 +4,14 @@ import h5py
 import pandas as pd
 
 
-def hdf2csv(hdf_file: str, dir: str):
+def hdf2csv(hdf_file: str, outdir: str):
     """
-    Convert the hdf5 file to csv files
+    Convert the hdf5 file to csv files. This method is used to convert the hdf5 files from the Antisense project to csv.
+    Data can be retrieved at: https://zenodo.org/records/5885636
+    File structure is described in the README file of the Antisense project.
+    Compatibility with other hdf5 files is not guaranteed.
     :param hdf_file: path to the hdf5 file
-    :param dir: directory to save the csv files
-    :param colnames: names of the columns
-    :param unneeded: names of the unneeded columns
+    :param outdir: directory to save the csv files
     """
     type = ['training', 'testing']
     with h5py.File(hdf_file, 'r') as f:
@@ -20,8 +21,7 @@ def hdf2csv(hdf_file: str, dir: str):
                 im = pd.DataFrame(f.get('rx' + str(i)).get(t)[:, :, 1])
                 df = pd.DataFrame()
                 df = df.append(re + 1j * im)
-                # split the df in 8 parts and save them in 8 different csv files
                 for j in range(0, 8):
-                    df[1000 * j:1000 * (j + 1)].to_csv(os.path.join(dir, 'rx' + str(i) + '_' + t + str(j) + '.csv'),
+                    df[1000 * j:1000 * (j + 1)].to_csv(os.path.join(outdir, 'rx' + str(i) + '_' + t + str(j) + '.csv'),
                                                        index=False,
                                                        header=False)
