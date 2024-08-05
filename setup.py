@@ -51,7 +51,10 @@ def load_data(path, colnames, unneeded):
         # each row is a time sample over the sub-carriers (frequencies)
         # compute the mean amplitude over the frequencies and normalize the values by it (i.e. by the energy of the CSI)
         mean = row.mean()
-        df.iloc[index] = row / mean
+        if row.mean() == 0:
+            df.drop(index)
+        else:
+            df.iloc[index] = row / mean
     return df
 
 
