@@ -108,16 +108,16 @@ def full_whd_matrix(dfs, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None):
         m_mean[k] = {}
         for k1, v1 in tqdm(dfs[k].items(), colour="green"):  # for each capture
             mean_csi = quantize(mean_csi_comp(dfs[k][k1]), 0, 2 ** q_amp - 1)  # quantize the mean CSI of capture k1
-            m_stddev[k][k1] = {}
-            m_mean[k][k1] = {}
+            m_stddev[k][k + k1] = {}
+            m_mean[k][k + k1] = {}
             for k2, v2 in dfs.items():  # for each folder
                 for k3, v3 in dfs[k2].items():  # for each capture
                     d = whd(dfqs[k2][k3], mean_csi)  # compute the WHD between the mean CSI of k1 and the CSIs of k3
                     l = []
                     for e in d.values():
                         l.append(e)
-                    m_stddev[k][k1][k3] = np.std(l) / normfact  # folder, capture1, capture2
-                    m_mean[k][k1][k3] = np.mean(l) / normfact
+                    m_stddev[k][k + k1][k2 + k3] = np.std(l) / normfact  # folder, capture1, capture2
+                    m_mean[k][k + k1][k2 + k3] = np.mean(l) / normfact
 
     if stddevpath is not None:
         whd_to_json(m_stddev, os.path.join(stddevpath, MTXSTDDEV))

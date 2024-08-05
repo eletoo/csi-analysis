@@ -12,8 +12,8 @@ def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, labels=None):
         labels = []
     plt.title("Distribution of WHD values")
     for i in range(len(df_quant)):
-        hist, edges = np.histogram(
-            list(whd(df_quant[i], quantize(mean_csi_comp(df[i]), 0, 2 ** q_amp - 1)).values()), bins=100)
+        hist, edges = np.histogram(list(whd(df_quant[i], quantize(mean_csi_comp(df[i]), 0, 2 ** q_amp - 1)).values()),
+                                   bins=100)
         plt.plot(edges[:-1], hist, label=labels[i] if i < len(labels) else "#ppl: " + str(i))
 
     plt.grid()
