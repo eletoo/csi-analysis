@@ -11,7 +11,7 @@ MU_SIGMA_TXT = "mu_sigma.txt"
 QB = 4  # qb = 3, 4, 5 to have support over 7, 15, 31 levels
 
 
-def quant(df, qb=QB, path=""):
+def qamp(df, path="", qb=QB):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
@@ -24,13 +24,16 @@ def quant(df, qb=QB, path=""):
 
     q_inc = qb
     dstar = 3 * sigma
-    q_amp = math.ceil(math.log2(1 / dstar * (2 ** q_inc + 1)))  # quantize amplitudes over 2^q_amp levels
+    return math.ceil(math.log2(1 / dstar * (2 ** q_inc + 1))), q_inc, art_incrq, incrq
 
+
+def quant(df, q_amp, path=""):
+    df = normalize(df)
     df_quant = quantize(df, 0, 2 ** q_amp - 1)  # quantize data over 2^qb levels
     save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
     mean_csi = quantize(mean_csi_comp(df), 0, 2 ** q_amp - 1)
 
-    return df, df_quant, art_incrq, incrq, q_inc, q_amp, mean_csi, sigma
+    return df, df_quant, mean_csi
 
 
 def quantize_incr(df, path, qb):

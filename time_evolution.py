@@ -3,7 +3,7 @@ import os
 import numpy as np
 from matplotlib import pyplot as pl
 
-import quant
+import quantize
 
 
 def plot_time_evolution_for_sc(df, df_quant, path: str = ""):
@@ -12,7 +12,6 @@ def plot_time_evolution_for_sc(df, df_quant, path: str = ""):
 
     if not os.path.exists(os.path.join(path, "time_evolution")):
         os.mkdir(os.path.join(path, "time_evolution"))
-    df = quant.normalize(df)
     for title in df:
         fig, ax1 = pl.subplots()
         ax2 = ax1.twinx()

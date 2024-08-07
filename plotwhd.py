@@ -3,18 +3,19 @@ import os
 import numpy as np
 from matplotlib import pyplot as plt
 
-from quant import quantize, mean_csi_comp
+from quantize import quantize, mean_csi_comp
 from whd import whd
 
 
-def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, labels=None):
+def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, nsc, labels=None):
     if labels is None:
         labels = []
     plt.title("Distribution of WHD values")
     for i in range(len(df_quant)):
-        hist, edges = np.histogram(list(whd(df_quant[i], quantize(mean_csi_comp(df[i]), 0, 2 ** q_amp - 1)).values()),
-                                   bins=100)
-        plt.plot(edges[:-1], hist, label=labels[i] if i < len(labels) else "#ppl: " + str(i))
+        whds = list(whd(df_quant[i], quantize(mean_csi_comp(df[i]), 0, 2 ** q_amp - 1)).values())
+        whds = [dist / (nsc * (2 ** q_amp) - 1) for dist in whds]
+        hist, edges = np.histogram(whds, bins=100)
+        plt.plot(edges[:-1], hist / max(hist), label=labels[i] if i < len(labels) else "#ppl: " + str(i))
 
     plt.grid()
     plt.xlabel(r'$WHD(A_c, A_c^*)$')

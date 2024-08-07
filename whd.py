@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from quant import quantize, mean_csi_comp
+from quantize import quantize, mean_csi_comp
 
 MTXSTDDEV = "whd_std.json"
 MTXMEAN = "whd_mean.json"
