@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.pyplot import xticks
+from matplotlib.pyplot import xticks, yticks
 
 import quantize
 
@@ -44,13 +44,13 @@ def plotcsi_quant(dfnorm, df_quant, n=1, q_amp=8, title='CSI Amplitude', xlabel=
     fig.suptitle(title)
 
     plt.xlabel(xlabel)
-    xticks(np.arange(0, len(dfnorm.columns), 25), fontsize=6)
-
+    xticks(np.arange(0, len(dfnorm.columns), 65), fontsize=6)
+    yticks(fontsize=6)
     ax[0].set_ylim(0, 1)
     ax[0].set_ylabel(ylabel)
     ax[1].set_ylim(0, 2 ** q_amp)
     ax[1].set_ylabel(r'$A_c^q$')
-    ax[2].set_ylim(-0.1, 0.1)
+    ax[2].set_ylim(-0.001, 0.001)
     ax[2].set_ylabel(r'$A_c - A_c^q$')
 
     ax[0].grid()

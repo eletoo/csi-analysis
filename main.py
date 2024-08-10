@@ -54,6 +54,7 @@ if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
     dirs = [
         "20hdf5/",
+        "20hdf5p/",
         "20ax/0ppl/",
         "20ax/1ppl/",
         "20ax/4ppl/",
@@ -84,6 +85,9 @@ if __name__ == '__main__':
         with open('preloaded/dirs.pickle', 'rb') as f2:
             dirs = pickle.load(f2)
     else:
+        if not os.path.exists('preloaded'):
+            os.makedirs('preloaded')
+
         q_amp = 8
         dfs = {}
         for bw in BWS:
@@ -107,15 +111,39 @@ if __name__ == '__main__':
                                                                 path=os.path.join(os.getcwd(), k, removeext(k1)))
                 if q_ampl > q_amp:
                     q_amp = q_ampl
+
+        with open('preloaded/q_amp.pickle', 'wb') as f:
+            pickle.dump(q_amp, f)
+        with open('preloaded/dfs.pickle', 'wb') as f1:
+            pickle.dump(dfs, f1)
+        with open('preloaded/dirs.pickle', 'wb') as f2:
+            pickle.dump(dirs, f2)
+
     print("Quantization level: " + str(q_amp) + " bits")
 
-    # save variables to file
-    with open('preloaded/q_amp.pickle', 'wb') as f:
-        pickle.dump(q_amp, f)
-    with open('preloaded/dfs.pickle', 'wb') as f1:
-        pickle.dump(dfs, f1)
-    with open('preloaded/dirs.pickle', 'wb') as f2:
-        pickle.dump(dirs, f2)
+    print("\nQuantizing data...\n")
+    dfqs = {}
+    for k, dframes in tqdm(dfs.items(), colour="red"):  # for each experiment (folder)
+        dfqs[k] = {}
+        for k1, df in dframes.items():  # for each capture (file in the folder)
+            dst_folder = os.path.join(os.getcwd(), k, removeext(k1))
+
+            # NORMALIZATION AND QUANTIZATION
+            df1, df_quant, mean_csi = quantize.quant(df, q_amp, path=dst_folder)
+            dfs[k][k1] = df1
+            dfqs[k][k1] = df_quant
+            # plotcsi(df1, 10)  # plot 10 random csi
+            plotcsi_quant(df1, df_quant, q_amp=q_amp, n=10, path=dst_folder)
+            # bsc_processing(df, df_quant, dst_folder)
+
+    with open('preloaded/dfqs.pickle', 'wb') as f:
+        pickle.dump(dfqs, f)
+
+    # COMPUTING MUTUAL INFORMATION - NOT USING IT FOR NOW (N.B. NOT REFACTORED)
+    # problist = {}
+    # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
+    #     problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
+    # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
 
     BW = int(input("Bandwidth to analyze (20, 40, 80): "))
     unneeded_dir = 'dontPlot/unnecessaryPlots' + str(BW) + STD
@@ -129,85 +157,65 @@ if __name__ == '__main__':
             keys.append(k)
     for k in keys:
         dfs.pop(k)
-
-    print("\nQuantizing data...\n")
-    dfqs = {}
-    for k, dframes in tqdm(dfs.items(), colour="red"):  # for each experiment (folder)
-        dfqs[k] = {}
-        for k1, df in tqdm(dframes.items(), colour="green"):  # for each capture (file in the folder)
-            dst_folder = os.path.join(os.getcwd(), k, removeext(k1))
-
-            # NORMALIZATION AND QUANTIZATION
-            df1, df_quant, mean_csi = quantize.quant(df, q_amp, path=dst_folder)
-            dfs[k][k1] = df1
-            dfqs[k][k1] = df_quant
-            # plotcsi(df1, 10)  # plot 10 random csi
-            plotcsi_quant(df1, df_quant, q_amp=q_amp, n=10, path=dst_folder)
-
-            # bsc_processing(df, df_quant, dst_folder)
-
-    # COMPUTING MUTUAL INFORMATION - NOT USING IT FOR NOW (N.B. NOT REFACTORED)
-    # problist = {}
-    # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
-    #     problist[i] = art_incr_quant.count(i) / len(art_incr_quant)
-    # int_info = mi.int_mi(df_quant, mean_csi, q_inc, q_amp, problist)
+        dfqs.pop(k)
 
     # COMPUTING WEIGHTED HAMMING DISTANCE
-    print("\nComputing WHD...\n")
+    print("\nComputing WHD for " + str(BW) + " MHz...\n")
     dst_folder = os.path.join(os.getcwd(), str(BW) + STD + "/out")
-    if not os.path.exists(dst_folder):
-        os.makedirs(dst_folder)
+    # dst_folder = os.path.join(os.getcwd(), "20hdf5" + "/out")
+
     whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
                                         dfqs=dfqs,  # dictionary containing the quantized data
                                         nsc=num_sc,  # number of subcarriers
                                         q_amp=q_amp,  # quantization level
-                                        stddevpath=dst_folder, meanpath=dst_folder)  # path where to save the output
+                                        stddevpath=dst_folder,  # path where to save the output
+                                        meanpath=dst_folder)
 
     # PLOTTING
     dfq_plot = [
         # dfqs['20ax/0ppl/']['capture0.csv'],
         # dfqs['20ax/1ppl/']['capture0.csv'],
         # dfqs['20ax/4ppl/']['capture0.csv'],
-        # dfqs['40ax/0ppl/']['capture0.csv'],
-        # dfqs['40ax/1ppl/']['capture0.csv'],
-        # dfqs['40ax/2ppl/']['capture0.csv'],
-        # dfqs['40ax/3ppl/']['capture0.csv'],
-        # dfqs['40ax/4ppl/']['capture0.csv'],
-        # dfqs['40ax/5ppl/']['capture00.csv'],
+        dfqs['40ax/0ppl/']['capture0.csv'],
+        dfqs['40ax/1ppl/']['capture0.csv'],
+        dfqs['40ax/2ppl/']['capture0.csv'],
+        dfqs['40ax/3ppl/']['capture0.csv'],
+        dfqs['40ax/4ppl/']['capture0.csv'],
+        dfqs['40ax/5ppl/']['capture00.csv'],
         # dfqs['80ax/0ppl/']['capture0.csv'],
         # dfqs['80ax/1ppl/']['capture0.csv'],
         # dfqs['80ax/2ppl/']['capture0.csv'],
         # dfqs['80ax/3ppl/']['capture0.csv'],
         # dfqs['80ax/4ppl/']['capture0.csv'],
         # dfqs['80ax/5ppl/']['capture0.csv'],
-        dfqs['20hdf5/']['rx1_testing0.csv'],
-        dfqs['20hdf5/']['rx2_testing0.csv'],
-        dfqs['20hdf5/']['rx3_testing0.csv'],
-        dfqs['20hdf5/']['rx4_testing0.csv'],
-        dfqs['20hdf5/']['rx5_testing0.csv'],
+        # dfqs['20hdf5/']['rx1_testing0.csv'],
+        # dfqs['20hdf5/']['rx2_testing0.csv'],
+        # dfqs['20hdf5/']['rx3_testing0.csv'],
+        # dfqs['20hdf5/']['rx4_testing0.csv'],
+        # dfqs['20hdf5/']['rx5_testing0.csv'],
     ]
     dfs_plot = [
         # dfs['20ax/0ppl/']['capture0.csv'],
         # dfs['20ax/1ppl/']['capture0.csv'],
         # dfs['20ax/4ppl/']['capture0.csv'],
-        # dfs['40ax/0ppl/']['capture0.csv'],
-        # dfs['40ax/1ppl/']['capture0.csv'],
-        # dfs['40ax/2ppl/']['capture0.csv'],
-        # dfs['40ax/3ppl/']['capture0.csv'],
-        # dfs['40ax/4ppl/']['capture0.csv'],
-        # dfs['40ax/5ppl/']['capture00.csv'],
+        dfs['40ax/0ppl/']['capture0.csv'],
+        dfs['40ax/1ppl/']['capture0.csv'],
+        dfs['40ax/2ppl/']['capture0.csv'],
+        dfs['40ax/3ppl/']['capture0.csv'],
+        dfs['40ax/4ppl/']['capture0.csv'],
+        dfs['40ax/5ppl/']['capture00.csv'],
         # dfs['80ax/0ppl/']['capture0.csv'],
         # dfs['80ax/1ppl/']['capture0.csv'],
         # dfs['80ax/2ppl/']['capture0.csv'],
         # dfs['80ax/3ppl/']['capture0.csv'],
         # dfs['80ax/4ppl/']['capture0.csv'],
         # dfs['80ax/5ppl/']['capture0.csv'],
-        dfs['20hdf5/']['rx1_testing0.csv'],
-        dfs['20hdf5/']['rx2_testing0.csv'],
-        dfs['20hdf5/']['rx3_testing0.csv'],
-        dfs['20hdf5/']['rx4_testing0.csv'],
-        dfs['20hdf5/']['rx5_testing0.csv'],
+        # dfs['20hdf5/']['rx1_testing0.csv'],
+        # dfs['20hdf5/']['rx2_testing0.csv'],
+        # dfs['20hdf5/']['rx3_testing0.csv'],
+        # dfs['20hdf5/']['rx4_testing0.csv'],
+        # dfs['20hdf5/']['rx5_testing0.csv'],
     ]
-    plt_superimposed_whd(dfq_plot, dfs_plot, q_amp, dst_folder, num_sc, labels=["rx1", "rx2", "rx3", "rx4", "rx5"])
+    plt_superimposed_whd(dfq_plot, dfs_plot, q_amp, dst_folder, num_sc, labels=None)
     # plt_whd_boxplot(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
     # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)

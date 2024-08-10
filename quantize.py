@@ -29,6 +29,13 @@ def qamp(df, path="", qb=QB):
 
 def quant(df, q_amp, path=""):
     df = normalize(df)
+
+    # plt.plot(df['capture0.csv'].iloc[1000], label='Normalized')
+    # plt.grid()
+    # plt.xlabel('Subcarrier')
+    # plt.ylabel('Amplitude')
+    # plt.savefig('original.pdf')
+    # plt.close()
     df_quant = quantize(df, 0, 2 ** q_amp - 1)  # quantize data over 2^qb levels
     save_mean_csi(df, os.path.join(path, MEAN_CSI_CSV))
     mean_csi = quantize(mean_csi_comp(df), 0, 2 ** q_amp - 1)
