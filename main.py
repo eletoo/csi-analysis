@@ -134,7 +134,7 @@ if __name__ == '__main__':
             dfqs[k][k1] = df_quant
             # plotcsi(df1, 10)  # plot 10 random csi
             plotcsi_quant(df1, df_quant, q_amp=q_amp, n=10, path=dst_folder)
-            # bsc_processing(df, df_quant, dst_folder)
+            # bsc_processing(df1, df_quant, dst_folder)
 
     with open('preloaded/dfqs.pickle', 'wb') as f:
         pickle.dump(dfqs, f)

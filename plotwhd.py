@@ -10,8 +10,9 @@ from whd import whd
 def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, nsc, labels=None):
     if labels is None:
         labels = []
-    plt.figure().set_figwidth(12)
-    plt.figure().set_figheight(4)
+    fig, ax = plt.subplots()
+    ratio = .5
+    ax.set_aspect(ratio)
     plt.title("Distribution of internal average WHD values")
     for i in range(len(df_quant)):
         whds = list(whd(df_quant[i], quantize(mean_csi_comp(df[i]), 0, 2 ** q_amp - 1)).values())
@@ -21,7 +22,7 @@ def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, nsc, labels=None):
 
     plt.grid()
     plt.xlabel(r'$\overline{WHD(A_c, A_c^*)}$', fontsize=8)
-    plt.ylabel('Frequency', fontsize=8)
+    plt.ylabel('Relative Frequency', fontsize=8)
     plt.legend()
     # plt.show()
     plt.savefig(os.path.join(dst_folder, "whd_dist_overlapped.pdf"))
