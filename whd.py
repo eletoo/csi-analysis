@@ -26,6 +26,17 @@ def whd(df, ref):
     return dists
 
 
+def whd_csi(csi, ref):
+    """
+    Computes the Weighted Hamming Distance between CSI and a reference CSI. CSIs are seen as
+    strings of N_sc*nbits bits, the weight is given by the conversion from binary to decimal.
+    :param csi: csi 1
+    :param ref: reference CSI
+    :return: distance between the two CSIs
+    """
+    return sum(pd.Series(abs(csi - ref)))
+
+
 def whd_matrix(dfs, workdir, dfqs, nsc, q_amp=9, stddevpath=None, meanpath=None):
     """
     Computes the average Weighted Hamming Distance between the mean CSI of each capture and the CSIs of all the other

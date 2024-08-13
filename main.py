@@ -9,13 +9,14 @@ import correlation
 import multidim_corr
 import quantize
 from hdf2df import hdf2csv
+from heatmap import heatmap
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
+from mindist import mindist
 from plotcsi import plotcsi_quant
 from plotwhd import plt_superimposed_whd
 from setup import print_menu, set_params, load_data, removeext
 from time_evolution import plot_time_evolution_for_sc
-from whd import full_whd_matrix
 
 np.random.seed(seed=527302)
 
@@ -136,9 +137,6 @@ if __name__ == '__main__':
             plotcsi_quant(df1, df_quant, q_amp=q_amp, n=10, path=dst_folder)
             # bsc_processing(df1, df_quant, dst_folder)
 
-    with open('preloaded/dfqs.pickle', 'wb') as f:
-        pickle.dump(dfqs, f)
-
     # COMPUTING MUTUAL INFORMATION - NOT USING IT FOR NOW (N.B. NOT REFACTORED)
     # problist = {}
     # for i in range(-2 ** (q_inc - 1) + 1, 2 ** (q_inc - 1)):
@@ -164,12 +162,17 @@ if __name__ == '__main__':
     dst_folder = os.path.join(os.getcwd(), str(BW) + STD + "/out")
     # dst_folder = os.path.join(os.getcwd(), "20hdf5" + "/out")
 
-    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
-                                        dfqs=dfqs,  # dictionary containing the quantized data
-                                        nsc=num_sc,  # number of subcarriers
-                                        q_amp=q_amp,  # quantization level
-                                        stddevpath=dst_folder,  # path where to save the output
-                                        meanpath=dst_folder)
+    # whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
+    #                                     dfqs=dfqs,  # dictionary containing the quantized data
+    #                                     nsc=num_sc,  # number of subcarriers
+    #                                     q_amp=q_amp,  # quantization level
+    #                                     stddevpath=dst_folder,  # path where to save the output
+    #                                     meanpath=dst_folder)
+
+    heatmap(dfqs)
+
+    # COMPUTING MINIMUM DISTANCE
+    mindist = mindist(dfqs, nsc=num_sc, q_amp=q_amp, mindistpath=dst_folder)
 
     # PLOTTING
     dfq_plot = [
