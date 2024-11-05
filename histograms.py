@@ -52,7 +52,8 @@ def plot(c: pandas.DataFrame, column_mean: float, title: str, dir_name: str, pat
     pl.xlabel('Magnitude')
     pl.ylabel('Relative frequency')
     pl.title(title)
-    # pl.xlim(-500, 500)
+    lim = max(abs(c.min()), abs(c.max()))
+    pl.xlim(-lim, lim)
     # pl.show()
     pl.rcParams.update(
         {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})

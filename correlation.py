@@ -47,8 +47,11 @@ def save_autocorrelation(df, path: str = ""):
     if not os.path.exists(os.path.join(path, "autocorrelation")):
         os.mkdir(os.path.join(path, "autocorrelation"))
 
+    acs = []
     for title in df:
-        plot_autocorrelation(df, title, 200, path)
+        acs.append(plot_autocorrelation(df, title, len(df) // 2, path)[1])
+    with open(os.path.join(path, "mean_peak.csv"), "w") as f:
+        f.write(str(sum(acs) / len(acs)))
 
 
 def plot_autocorrelation(df, title, tau_max, path):
@@ -59,16 +62,19 @@ def plot_autocorrelation(df, title, tau_max, path):
     :param path: path where to save the figure
     :return: None
     """
-    pl.plot(autocorrelation(df, title, tau_max, mode=1))
-    pl.xlabel('Tau')
-    pl.ylabel('Auto-correlation')
-    pl.title("Auto-correlation " + str(title))
+    pl.figure(figsize=(6, 2.5))
+    ac = autocorrelation(df, title, tau_max, mode=1)
+    pl.plot(ac)
+    pl.xlabel('Lag ' + r"$\tau$", fontsize=12)
+    pl.ylabel('Auto-covariance', fontsize=12)
+    # pl.title("Auto-correlation " + str(title))
     pl.rcParams.update(
         {'axes.titlesize': 'large', 'axes.labelsize': 'large', 'xtick.labelsize': 'large', 'ytick.labelsize': 'large'})
     pl.grid(visible=True)
-    pl.savefig(os.path.join(os.getcwd(), path, 'autocorrelation', 'figure' + str(title) + '.pdf'))
+    pl.savefig(os.path.join(os.getcwd(), path, 'autocorrelation', 'figure' + str(title) + '.pdf'), bbox_inches='tight')
     # print("Plotting figure " + str(title))
     pl.close()
+    return ac
 
 
 def plot_interSC_corr(df, ind, tau_max, path):
@@ -83,7 +89,7 @@ def plot_interSC_corr(df, ind, tau_max, path):
     :return: None
 """
     pl.plot(autocorrelation(df, ind, tau_max, mode=0))
-    pl.xlabel('Tau')
+    pl.xlabel('Lag ' + r"$\tau$")
     pl.ylabel('Auto-correlation')
     pl.title("Inter-SC Correlation of CSI " + str(ind))
     pl.rcParams.update(
@@ -98,7 +104,7 @@ def autocorrelation(df, index, tau_max, mode: int = 0):
     """
     :param df: dataframe containing the data to be processed; columns are the subcarriers, rows are either the time
                 samples/CSI or the increments of the amplitude between two adjacent subcarriers
-    :param index: if mode is 0, column index of the dataframe to be processed (i.e. the subcarrier index); if mode is 1,
+    :param index: if mode is 1, column index of the dataframe to be processed (i.e. the subcarrier index); if mode is 0,
                     row index of the dataframe to be processed (i.e. the CSI index)
     :param tau_max: maximum value of tau, the lag parameter of the autocorrelation function (i.e. "window" over which to
                     compute the correlation)

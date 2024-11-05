@@ -11,9 +11,9 @@ def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, nsc, labels=None):
     if labels is None:
         labels = []
     fig, ax = plt.subplots()
-    ratio = .5
-    ax.set_aspect(ratio)
-    plt.title("Distribution of internal average WHD values")
+    fig.set_size_inches(6, 2.5)
+    ax.set_xlim(0, 0.23)
+    # plt.title("Distribution of normalized internal WHD values")
     for i in range(len(df_quant)):
         whds = list(whd(df_quant[i], quantize(mean_csi_comp(df[i]), 0, 2 ** q_amp - 1)).values())
         whds = list([dist / (nsc * (2 ** q_amp) - 1) for dist in whds])
@@ -21,11 +21,11 @@ def plt_superimposed_whd(df_quant, df, q_amp, dst_folder, nsc, labels=None):
         plt.plot(edges[:-1], hist / sum(hist), label=labels[i] if i < len(labels) else "#ppl: " + str(i))
 
     plt.grid()
-    plt.xlabel(r'$\overline{WHD(A_c, A_c^*)}$', fontsize=8)
-    plt.ylabel('Relative Frequency', fontsize=8)
+    plt.xlabel(r'$WHD(A_c, A_c^*)$', fontsize=12)
+    plt.ylabel('Relative Frequency', fontsize=12)
     plt.legend()
     # plt.show()
-    plt.savefig(os.path.join(dst_folder, "whd_dist_overlapped.pdf"))
+    plt.savefig(os.path.join(dst_folder, "whd_dist_overlapped.pdf"), bbox_inches='tight')
     plt.close()
 
 
