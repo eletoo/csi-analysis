@@ -17,6 +17,7 @@ from plotcsi import plotcsi_quant
 from plotwhd import plt_superimposed_whd
 from setup import print_menu, set_params, load_data, removeext
 from time_evolution import plot_time_evolution_for_sc
+from whd import full_whd_matrix
 
 np.random.seed(seed=527302)
 
@@ -54,23 +55,7 @@ def bsc_processing(dforig, dfq, outpath):
 if __name__ == '__main__':
     ########## INFORMATION SETUP ##########
     dirs = [
-        "20hdf5/",
-        "20hdf5p/",
-        "20ax/0ppl/",
-        "20ax/1ppl/",
-        "20ax/4ppl/",
-        "40ax/0ppl/",
-        "40ax/1ppl/",
-        "40ax/2ppl/",
-        "40ax/3ppl/",
-        "40ax/4ppl/",
-        "40ax/5ppl/",
-        "80ax/0ppl/",
-        "80ax/1ppl/",
-        "80ax/2ppl/",
-        "80ax/3ppl/",
-        "80ax/4ppl/",
-        "80ax/5ppl/",
+        "80ax/prova/",
     ]  # folders containing the data
     BWS = [20, 40, 80]  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -161,64 +146,26 @@ if __name__ == '__main__':
     print("\nComputing WHD for " + str(BW) + " MHz...\n")
     dst_folder = os.path.join(os.getcwd(), str(BW) + STD + "/out")
     # dst_folder = os.path.join(os.getcwd(), "20hdf5" + "/out")
+    if not os.path.exists(dst_folder):
+        os.makedirs(dst_folder)
 
-    # whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
-    #                                     dfqs=dfqs,  # dictionary containing the quantized data
-    #                                     nsc=num_sc,  # number of subcarriers
-    #                                     q_amp=q_amp,  # quantization level
-    #                                     stddevpath=dst_folder,  # path where to save the output
-    #                                     meanpath=dst_folder)
+    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
+                                        dfqs=dfqs,  # dictionary containing the quantized data
+                                        nsc=num_sc,  # number of subcarriers
+                                        q_amp=q_amp,  # quantization level
+                                        stddevpath=dst_folder,  # path where to save the output
+                                        meanpath=dst_folder)
 
-    heatmap(dfqs)
+    # heatmap(dfqs)
 
     # COMPUTING MINIMUM DISTANCE
     mindist = mindist(dfqs, nsc=num_sc, q_amp=q_amp, mindistpath=dst_folder)
 
     # PLOTTING
     dfq_plot = [
-        # dfqs['20ax/0ppl/']['capture0.csv'],
-        # dfqs['20ax/1ppl/']['capture0.csv'],
-        # dfqs['20ax/4ppl/']['capture0.csv'],
-        dfqs['40ax/0ppl/']['capture0.csv'],
-        dfqs['40ax/1ppl/']['capture0.csv'],
-        dfqs['40ax/2ppl/']['capture0.csv'],
-        dfqs['40ax/3ppl/']['capture0.csv'],
-        dfqs['40ax/4ppl/']['capture0.csv'],
-        dfqs['40ax/5ppl/']['capture00.csv'],
-        # dfqs['80ax/0ppl/']['capture0.csv'],
-        # dfqs['80ax/1ppl/']['capture0.csv'],
-        # dfqs['80ax/2ppl/']['capture0.csv'],
-        # dfqs['80ax/3ppl/']['capture0.csv'],
-        # dfqs['80ax/4ppl/']['capture0.csv'],
-        # dfqs['80ax/5ppl/']['capture0.csv'],
-        # dfqs['20hdf5/']['rx1_testing0.csv'],
-        # dfqs['20hdf5/']['rx2_testing0.csv'],
-        # dfqs['20hdf5/']['rx3_testing0.csv'],
-        # dfqs['20hdf5/']['rx4_testing0.csv'],
-        # dfqs['20hdf5/']['rx5_testing0.csv'],
+        dfqs['80ax/prova/']['capture80_1.csv'],
     ]
     dfs_plot = [
-        # dfs['20ax/0ppl/']['capture0.csv'],
-        # dfs['20ax/1ppl/']['capture0.csv'],
-        # dfs['20ax/4ppl/']['capture0.csv'],
-        dfs['40ax/0ppl/']['capture0.csv'],
-        dfs['40ax/1ppl/']['capture0.csv'],
-        dfs['40ax/2ppl/']['capture0.csv'],
-        dfs['40ax/3ppl/']['capture0.csv'],
-        dfs['40ax/4ppl/']['capture0.csv'],
-        dfs['40ax/5ppl/']['capture00.csv'],
-        # dfs['80ax/0ppl/']['capture0.csv'],
-        # dfs['80ax/1ppl/']['capture0.csv'],
-        # dfs['80ax/2ppl/']['capture0.csv'],
-        # dfs['80ax/3ppl/']['capture0.csv'],
-        # dfs['80ax/4ppl/']['capture0.csv'],
-        # dfs['80ax/5ppl/']['capture0.csv'],
-        # dfs['20hdf5/']['rx1_testing0.csv'],
-        # dfs['20hdf5/']['rx2_testing0.csv'],
-        # dfs['20hdf5/']['rx3_testing0.csv'],
-        # dfs['20hdf5/']['rx4_testing0.csv'],
-        # dfs['20hdf5/']['rx5_testing0.csv'],
+        dfs['80ax/prova/']['capture80_1.csv'],
     ]
     plt_superimposed_whd(dfq_plot, dfs_plot, q_amp, dst_folder, num_sc, labels=None)
-    # plt_whd_boxplot(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
-    # plt_whd_violin(df_quant, mean_csi, df_quant2, mean_csi2, df_quant3, mean_csi3, dst_folder)
