@@ -11,7 +11,7 @@ MU_SIGMA_TXT = "mu_sigma.txt"
 QB = 4  # qb = 3, 4, 5 to have support over 7, 15, 31 levels
 
 
-def qamp(df, path="", qb=QB):
+def compute_qamp(df, path="", qb=QB):
     if path != "" and not os.path.exists(path):
         os.mkdir(path)
 
@@ -19,8 +19,8 @@ def qamp(df, path="", qb=QB):
 
     art_incrq, incrq, mu, sigma = quantize_incr(df, path, qb)
 
-    with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
-        f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
+    # with open(os.path.join(path, MU_SIGMA_TXT), "w") as f:
+    #     f.write("MU: " + str(mu) + "\tSIGMA: " + str(sigma) + "\n")
 
     q_inc = qb
     dstar = 3 * sigma

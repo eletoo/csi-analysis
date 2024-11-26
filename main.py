@@ -1,5 +1,6 @@
 import os
 import pickle
+from time import sleep
 
 import numpy as np
 import pandas as pd
@@ -8,11 +9,10 @@ from tqdm import tqdm
 import correlation
 import multidim_corr
 import quantize
+import whd
 from hdf2df import hdf2csv
-from heatmap import heatmap
 from histograms import plot_histogram_for_sc
 from increments import plot_increments_for_sc
-from mindist import mindist
 from plotcsi import plotcsi_quant
 from plotwhd import plt_superimposed_whd
 from setup import print_menu, set_params, load_data, removeext
@@ -53,9 +53,13 @@ def bsc_processing(dforig, dfq, outpath):
 
 
 if __name__ == '__main__':
+
+    print("\n\nMake sure you have run the 'clean' script before running this one to remove spurious data.", end="\n\n")
+    sleep(3)
+
     ########## INFORMATION SETUP ##########
     dirs = [
-        "80ax/prova/",
+        "80ax/0ppl/",
     ]  # folders containing the data
     BWS = [20, 40, 80]  # channel bandwidth: 20, 40, 80 MHz
     STD = 'ax'  # modulation: ax, ac
@@ -70,6 +74,8 @@ if __name__ == '__main__':
             dfs = pickle.load(f1)
         with open('preloaded/dirs.pickle', 'rb') as f2:
             dirs = pickle.load(f2)
+        with open('preloaded/dfqs.pickle', 'rb') as f3:
+            dfqs = pickle.load(f3)
     else:
         if not os.path.exists('preloaded'):
             os.makedirs('preloaded')
@@ -85,18 +91,34 @@ if __name__ == '__main__':
             for d in tqdm(dirs1, colour="red"):
                 dfs[d] = {}
                 p = os.path.join(os.getcwd(), d)
-                for f in tqdm(os.listdir(d), colour="green"):
+                for f in os.listdir(d):
                     if os.path.isfile(p + f) and f.endswith('.h5'):  # only hdf5 files from antisense project
                         hdf2csv(os.path.join(p, f), d)  # convert hdf5 to csv
                     elif os.path.isfile(p + f) and f.endswith('.csv'):
                         dfs[d][f] = pd.DataFrame(load_data(os.path.join(p, f), colnames, unneeded))  # load data
 
         for k, dframes in tqdm(dfs.items(), colour="red"):  # for each experiment (folder)
-            for k1, df in tqdm(dframes.items(), colour="green"):  # for each capture (file in the folder)
-                q_ampl, q_inc, art_incrq, incrq = quantize.qamp(df,
-                                                                path=os.path.join(os.getcwd(), k, removeext(k1)))
+            for k1, df in dframes.items():  # for each capture (file in the folder)
+                q_ampl, _, _, _ = quantize.compute_qamp(df, path=os.path.join(os.getcwd(), k, removeext(k1)))
                 if q_ampl > q_amp:
                     q_amp = q_ampl
+
+        print("Amplitude quantization level: " + str(q_amp) + " bits")
+
+        print("\nQuantizing data...\n")
+        dfqs = {}
+        for k, dframes in tqdm(dfs.items(), colour="red"):  # for each experiment (folder)
+            dfqs[k] = {}
+            for k1, df in dframes.items():  # for each capture (file in the folder)
+                dst_folder = os.path.join(os.getcwd(), k, removeext(k1))
+
+                # NORMALIZATION AND QUANTIZATION
+                df1, df_quant, mean_csi = quantize.quant(df, q_amp, path=dst_folder)
+                dfs[k][k1] = df1  # normalized data
+                dfqs[k][k1] = df_quant  # quantized data
+                # plotcsi(df1, 10)  # plot 10 random csi
+                plotcsi_quant(df1, df_quant, q_amp=q_amp, n=10, path=dst_folder)
+                # bsc_processing(df1, df_quant, dst_folder)
 
         with open('preloaded/q_amp.pickle', 'wb') as f:
             pickle.dump(q_amp, f)
@@ -104,23 +126,8 @@ if __name__ == '__main__':
             pickle.dump(dfs, f1)
         with open('preloaded/dirs.pickle', 'wb') as f2:
             pickle.dump(dirs, f2)
-
-    print("Quantization level: " + str(q_amp) + " bits")
-
-    print("\nQuantizing data...\n")
-    dfqs = {}
-    for k, dframes in tqdm(dfs.items(), colour="red"):  # for each experiment (folder)
-        dfqs[k] = {}
-        for k1, df in dframes.items():  # for each capture (file in the folder)
-            dst_folder = os.path.join(os.getcwd(), k, removeext(k1))
-
-            # NORMALIZATION AND QUANTIZATION
-            df1, df_quant, mean_csi = quantize.quant(df, q_amp, path=dst_folder)
-            dfs[k][k1] = df1
-            dfqs[k][k1] = df_quant
-            # plotcsi(df1, 10)  # plot 10 random csi
-            plotcsi_quant(df1, df_quant, q_amp=q_amp, n=10, path=dst_folder)
-            # bsc_processing(df1, df_quant, dst_folder)
+        with open('preloaded/dfqs.pickle', 'wb') as f3:
+            pickle.dump(dfqs, f3)
 
     # COMPUTING MUTUAL INFORMATION - NOT USING IT FOR NOW (N.B. NOT REFACTORED)
     # problist = {}
@@ -149,8 +156,8 @@ if __name__ == '__main__':
     if not os.path.exists(dst_folder):
         os.makedirs(dst_folder)
 
-    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # passing dfs relative to a single experiment
-                                        dfqs=dfqs,  # dictionary containing the quantized data
+    whd_std, whd_mean = full_whd_matrix(dfs=dfs,  # dictionary containing the normalized CSIs
+                                        dfqs=dfqs,  # dictionary containing the quantized CSIs
                                         nsc=num_sc,  # number of subcarriers
                                         q_amp=q_amp,  # quantization level
                                         stddevpath=dst_folder,  # path where to save the output
@@ -159,13 +166,16 @@ if __name__ == '__main__':
     # heatmap(dfqs)
 
     # COMPUTING MINIMUM DISTANCE
-    mindist = mindist(dfqs, nsc=num_sc, q_amp=q_amp, mindistpath=dst_folder)
+    # mindist = mindist(dfqs, nsc=num_sc, q_amp=q_amp, mindistpath=dst_folder)
 
     # PLOTTING
     dfq_plot = [
-        dfqs['80ax/prova/']['capture80_1.csv'],
+        dfqs['80ax/0ppl/']['capture1.csv'],
+        dfqs['80ax/0ppl/']['capture2.csv'],
+
     ]
     dfs_plot = [
-        dfs['80ax/prova/']['capture80_1.csv'],
+        dfs['80ax/0ppl/']['capture1.csv'],
+        dfs['80ax/0ppl/']['capture2.csv'],
     ]
     plt_superimposed_whd(dfq_plot, dfs_plot, q_amp, dst_folder, num_sc, labels=None)

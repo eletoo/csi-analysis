@@ -1,4 +1,5 @@
 import os
+import string
 
 import pandas as pd
 
@@ -41,10 +42,12 @@ def load_data(path, colnames, unneeded):
             if title in unneeded:
                 del df[title]
             else:
-                # format complex numbers into readable values
-                df[title] = pd.DataFrame(
-                    abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for value
-                    in df[title])
+                if df[title].dtype == string:
+                    # format complex numbers into readable values
+                    df[title] = pd.DataFrame(
+                        abs(complex(value.replace(" ", "").replace("i", "j").replace("(", "").replace(")", ""))) for
+                        value
+                        in df[title])
 
     # REMOVE EFFECT OF AGC
     indexes = []
